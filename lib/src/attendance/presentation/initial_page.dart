@@ -60,6 +60,9 @@ class InitialPage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    SizedBox(
+                      width: 140,
+                    ),
                     Center(
                         child: Container(
                       decoration: BoxDecoration(
