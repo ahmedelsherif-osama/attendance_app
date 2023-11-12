@@ -1,5 +1,5 @@
 import 'package:attendance/src/attendance/presentation/attendance_page.dart';
-import 'package:attendance/src/attendance/presentation/home_page.dart';
+import 'package:attendance/src/attendance/presentation/home_page_view.dart';
 import 'package:attendance/src/attendance/presentation/manage_schools_bus_routes_students_page.dart';
 import 'package:go_router/go_router.dart';
 
@@ -7,11 +7,11 @@ final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const HomePage(),
+      builder: (context, state) => HomePageView(),
     ),
     GoRoute(
       path: '/attendance',
-      builder: (context, state) => const AttendancePage(),
+      builder: (context, state) => AttendancePage(),
     ),
     GoRoute(
       path: '/manage-all',
