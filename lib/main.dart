@@ -1,5 +1,5 @@
 import 'package:attendance/core/utils/router.dart';
-import 'package:attendance/src/attendance/presentation/attendance_cubit.dart';
+import 'package:attendance/src/attendance/presentation/cubit/attendance_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

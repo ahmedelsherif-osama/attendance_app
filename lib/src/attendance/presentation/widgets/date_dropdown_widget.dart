@@ -23,14 +23,15 @@ class _DateDropDownState extends State<DateDropDown> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: DropdownButton<DateTime>(
-          items: dateList,
-          onChanged: (DateTime? selectedDate) {
-            // Handle the selected date here
-          },
-          hint: Text(DateTime.now().toString().substring(0, 10)),
+    return Container(
+      child: DropdownButton<DateTime>(
+        items: dateList,
+        onChanged: (DateTime? selectedDate) {
+          // Handle the selected date here
+        },
+        hint: Text(
+          DateTime.now().toString().substring(0, 10),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
     );

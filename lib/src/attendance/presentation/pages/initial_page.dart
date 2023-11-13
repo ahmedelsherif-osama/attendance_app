@@ -2,7 +2,7 @@ import 'package:attendance/core/utils/temp_dummy_data.dart';
 import 'package:attendance/src/attendance/domain/entities/bus_route.dart';
 import 'package:attendance/src/attendance/domain/entities/school.dart';
 import 'package:attendance/src/attendance/domain/entities/student.dart';
-import 'package:attendance/src/attendance/presentation/attendance_cubit.dart';
+import 'package:attendance/src/attendance/presentation/cubit/attendance_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
