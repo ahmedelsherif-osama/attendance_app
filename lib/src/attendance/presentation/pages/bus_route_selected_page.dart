@@ -186,7 +186,9 @@ class BusRouteSelectedPage extends StatelessWidget {
                       return ListTile(
                         title: Container(
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              border: Border.all(color: Colors.black),
+                              borderRadius: BorderRadius.circular(4),
+                              color: Colors.grey.shade400,
                               backgroundBlendMode: BlendMode.clear),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
