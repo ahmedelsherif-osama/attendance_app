@@ -6,7 +6,7 @@ class ManageSchoolsBusRoutesStudentsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           image: DecorationImage(
             image: AssetImage(
                 '/images/background.jpg'), // Replace with your image asset
@@ -16,6 +16,9 @@ class ManageSchoolsBusRoutesStudentsPage extends StatelessWidget {
         child: Center(
           child: Column(
             children: [
+              const SizedBox(
+                height: 70,
+              ),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.black,
