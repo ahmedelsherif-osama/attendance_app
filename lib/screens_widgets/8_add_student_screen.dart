@@ -50,11 +50,17 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.runtimeType != String) {
-                            return 'Please enter some text';
+                          if (RegExp(r'^[A-Za-z]+$')
+                                      .hasMatch(value.toString()) ==
+                                  true ||
+                              int.tryParse(value!) == null ||
+                              double.tryParse(value) == null ||
+                              value.isEmpty) {
+                            return null;
                           }
-                          return null;
+                          return 'Please enter a valid name';
                         },
                         controller: nameController,
                         decoration: const InputDecoration(
@@ -84,6 +90,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.runtimeType != int) {
                             return 'Please enter a valid phone number';
@@ -100,6 +107,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.runtimeType != int) {
                             return 'Please enter a valid phone number';
@@ -116,6 +124,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.runtimeType != int) {
                             return 'Please enter a valid grade number';
@@ -132,6 +141,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.runtimeType != int) {
                             return 'Please enter a valid group number';
@@ -148,6 +158,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.runtimeType != String) {
                             return 'Please enter a valid school name';
@@ -164,6 +175,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.runtimeType != int) {
                             return 'Please enter a valid route number';
@@ -180,6 +192,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.runtimeType != String) {
                             return 'Please enter a valid address';
@@ -196,6 +209,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.toString().runtimeType != double) {
                             return 'Please enter a valid latitude';
@@ -212,6 +226,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.runtimeType != double) {
                             return 'Please enter a valid longtitude';
@@ -228,6 +243,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value.runtimeType != int) {
                             return 'Please enter a valid makkani number';
