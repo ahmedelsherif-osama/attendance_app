@@ -52,15 +52,11 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (RegExp(r'^[A-Za-z]+$')
-                                      .hasMatch(value.toString()) ==
-                                  true ||
-                              int.tryParse(value!) == null ||
-                              double.tryParse(value) == null ||
-                              value.isEmpty) {
-                            return null;
+                          if (RegExp(r'[^\w\s]').hasMatch(value.toString()) ||
+                              RegExp(r'\d+').hasMatch(value.toString())) {
+                            return 'Please enter a valid name';
                           }
-                          return 'Please enter a valid name';
+                          return null;
                         },
                         controller: nameController,
                         decoration: const InputDecoration(
@@ -92,7 +88,7 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.runtimeType != int) {
+                          if (int.tryParse(value!) == null || value.isEmpty) {
                             return 'Please enter a valid phone number';
                           }
                           return null;
@@ -109,7 +105,7 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.runtimeType != int) {
+                          if (int.tryParse(value!) == null || value.isEmpty) {
                             return 'Please enter a valid phone number';
                           }
                           return null;
@@ -126,7 +122,7 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.runtimeType != int) {
+                          if (int.tryParse(value!) == null || value.isEmpty) {
                             return 'Please enter a valid grade number';
                           }
                           return null;
@@ -143,7 +139,7 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.runtimeType != int) {
+                          if (int.tryParse(value!) == null || value.isEmpty) {
                             return 'Please enter a valid group number';
                           }
                           return null;
@@ -160,7 +156,8 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.runtimeType != String) {
+                          if (RegExp(r'[^\w\s]').hasMatch(value.toString()) ||
+                              RegExp(r'\d+').hasMatch(value.toString())) {
                             return 'Please enter a valid school name';
                           }
                           return null;
@@ -177,7 +174,7 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.runtimeType != int) {
+                          if (int.tryParse(value!) == null || value.isEmpty) {
                             return 'Please enter a valid route number';
                           }
                           return null;
@@ -192,13 +189,6 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) {
-                          if (value.runtimeType != String) {
-                            return 'Please enter a valid address';
-                          }
-                          return null;
-                        },
                         controller: addressDescriptionController,
                         decoration: const InputDecoration(
                           labelText: 'Address',
@@ -211,7 +201,9 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.toString().runtimeType != double) {
+                          if (double.tryParse(value!) == null ||
+                              value.isEmpty ||
+                              int.tryParse(value) != null) {
                             return 'Please enter a valid latitude';
                           }
                           return null;
@@ -228,7 +220,9 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.runtimeType != double) {
+                          if (double.tryParse(value!) == null ||
+                              value.isEmpty ||
+                              int.tryParse(value) != null) {
                             return 'Please enter a valid longtitude';
                           }
                           return null;
@@ -245,7 +239,7 @@ class AddStudentScreen extends StatelessWidget {
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
-                          if (value.runtimeType != int) {
+                          if (int.tryParse(value!) == null || value.isEmpty) {
                             return 'Please enter a valid makkani number';
                           }
                           return null;
