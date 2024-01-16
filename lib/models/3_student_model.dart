@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class StudentModel extends Equatable {
@@ -92,6 +93,30 @@ class StudentModel extends Equatable {
       schoolName: json['schoolName'] as String,
       busRouteNumber: json['busRouteNumber'] as String,
     );
+  }
+
+  void addStudentToFirestore() async {
+    // Create a new instance of SchoolModel
+    StudentModel newStudent = StudentModel(
+      name: name,
+      studentID: studentID,
+      primaryPhoneNumber: primaryPhoneNumber,
+      fatherPhoneNumber: fatherPhoneNumber,
+      grade: grade,
+      group: group,
+      longtitude: longtitude,
+      latitude: latitude,
+      makkani: makkani,
+      addressDescription: addressDescription,
+      schoolName: schoolName,
+      busRouteNumber: busRouteNumber,
+    );
+
+    // Convert StudentModel to JSON
+    Map<String, dynamic> studentJson = newStudent.toJson();
+
+    // Add the document to Firestore
+    await FirebaseFirestore.instance.collection('students').add(studentJson);
   }
 
   static fromMap(Map<String, dynamic> data) {

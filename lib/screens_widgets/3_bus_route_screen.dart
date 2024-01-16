@@ -42,6 +42,7 @@ class BusRouteScreen extends StatelessWidget {
                 );
               }).toList();
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
                     busRouteName,
@@ -52,46 +53,64 @@ class BusRouteScreen extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Text("Areas covered: "),
-                      SizedBox(height: MediaQuery.of(context).size.width * 0.1),
-                      Flexible(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: busRoute.areas.length,
-                          itemBuilder: (context, index) {
-                            return Text(
-                              busRoute.areas[index],
-                            );
-                          },
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 500),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text("Areas covered: "),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.1),
+                        Flexible(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: busRoute.areas.length,
+                            itemBuilder: (context, index) {
+                              return Text(
+                                busRoute.areas[index],
+                              );
+                            },
+                          ),
                         ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<AppCubit>().updateState(
+                                context.read<AppCubit>().state.copyWith(
+                                      students: studentsToModel,
+                                      currentBusRoute: busRoute,
+                                      currentSchool: context
+                                          .read<AppCubit>()
+                                          .state
+                                          .schools
+                                          .firstWhere(
+                                            (element) =>
+                                                element.name ==
+                                                busRoute.schoolName,
+                                          ),
+                                    ),
+                              );
+                          context.go('/attendance_record');
+                          print("what now?");
+                        },
+                        child: const Text('Take/Check Attendance'),
+                      ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.go('/add_student_screen');
+                        },
+                        child: const Text("Add Student"),
                       ),
                     ],
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
-                  TextButton(
-                    onPressed: () {
-                      context.read<AppCubit>().updateState(
-                            context.read<AppCubit>().state.copyWith(
-                                  students: studentsToModel,
-                                  currentBusRoute: busRoute,
-                                  currentSchool: context
-                                      .read<AppCubit>()
-                                      .state
-                                      .schools
-                                      .firstWhere(
-                                        (element) =>
-                                            element.name == busRoute.schoolName,
-                                      ),
-                                ),
-                          );
-                      context.go('/attendance_record');
-                      print("what now?");
-                    },
-                    child: const Text('Take/Check Attendance'),
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                   Expanded(
@@ -115,6 +134,7 @@ class BusRouteScreen extends StatelessWidget {
                       },
                     ),
                   ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.1),
                 ],
               );
             } catch (e) {
