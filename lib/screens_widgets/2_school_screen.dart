@@ -106,7 +106,7 @@ class SchoolScreen extends StatelessWidget {
                               .updateSchoolOnFirestore(context
                                   .read<AppCubit>()
                                   .state
-                                  .currentAttendanceRecordFirebaseDocId);
+                                  .currentFirebaseDocId);
                           context.go('/');
                         },
                         child: Text('Save changes'),
@@ -128,7 +128,7 @@ class SchoolScreen extends StatelessWidget {
                               .deleteSchoolFromFirestore(context
                                   .read<AppCubit>()
                                   .state
-                                  .currentAttendanceRecordFirebaseDocId);
+                                  .currentFirebaseDocId);
                           context.go('/');
                         },
                         child: Text('Delete School'),
@@ -153,7 +153,17 @@ class SchoolScreen extends StatelessWidget {
                             print("wtf is this? " + busRoute['schoolName']);
                             var areas = busRoute['areas'];
                             var studentsIDs = busRoute['studentsIDs'];
-
+                            var docID = snapshot.data!.docs
+                                .firstWhere((element) =>
+                                    element['schoolName'] == schoolName &&
+                                    element['busRouteNumber'] ==
+                                        int.parse(busRoutes[index]))
+                                .id;
+                            context.read<AppCubit>().updateState(
+                                  context.read<AppCubit>().state.copyWith(
+                                        currentFirebaseDocId: docID,
+                                      ),
+                                );
                             context.read<AppCubit>().updateState(
                                 context.read<AppCubit>().state.copyWith(
                                         currentBusRoute: BusRouteModel(

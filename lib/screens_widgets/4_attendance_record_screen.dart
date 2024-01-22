@@ -57,8 +57,7 @@ class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
                 context
                     .read<AppCubit>()
                     .updateState(context.read<AppCubit>().state.copyWith(
-                          currentAttendanceRecordFirebaseDocId:
-                              statesDateDoc.id,
+                          currentFirebaseDocId: statesDateDoc.id,
                         ));
 
                 var mappedData2 = statesDateDoc['studentAttendanceCheckboxes']
@@ -113,7 +112,7 @@ class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
                                             .currentDate));
                                 context.read<AppCubit>().updateState(
                                     context.read<AppCubit>().state.copyWith(
-                                          currentAttendanceRecordFirebaseDocId:
+                                          currentFirebaseDocId:
                                               statesDateDoc.id,
                                         ));
                                 mappedData2 = statesDateDoc[
@@ -137,7 +136,7 @@ class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
                           docId: context
                               .read<AppCubit>()
                               .state
-                              .currentAttendanceRecordFirebaseDocId,
+                              .currentFirebaseDocId,
                         ),
                       ],
                     );
@@ -184,8 +183,7 @@ class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
                 context
                     .read<AppCubit>()
                     .updateState(context.read<AppCubit>().state.copyWith(
-                          currentAttendanceRecordFirebaseDocId:
-                              statesDateDoc.id,
+                          currentFirebaseDocId: statesDateDoc.id,
                         ));
 
                 var mappedData2 = statesDateDoc['studentAttendanceCheckboxes']
@@ -240,7 +238,7 @@ class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
                                             .currentDate));
                                 context.read<AppCubit>().updateState(
                                     context.read<AppCubit>().state.copyWith(
-                                          currentAttendanceRecordFirebaseDocId:
+                                          currentFirebaseDocId:
                                               statesDateDoc.id,
                                         ));
                                 mappedData2 = statesDateDoc[
@@ -264,7 +262,7 @@ class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
                           docId: context
                               .read<AppCubit>()
                               .state
-                              .currentAttendanceRecordFirebaseDocId,
+                              .currentFirebaseDocId,
                         ),
                       ],
                     );

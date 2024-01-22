@@ -14,7 +14,8 @@ class AppState extends Equatable {
     required this.currentStudent,
     required this.currentDate,
     required this.currentAttendanceRecord,
-    required this.currentAttendanceRecordFirebaseDocId,
+    required this.currentFirebaseDocId,
+    required this.currentSchoolFirebaseDocId,
   });
   final List<SchoolModel> schools;
   final List<BusRouteModel> busRoutes;
@@ -24,7 +25,8 @@ class AppState extends Equatable {
   final StudentModel currentStudent;
   final DateTime currentDate;
   final AttendanceRecordModel currentAttendanceRecord;
-  final String currentAttendanceRecordFirebaseDocId;
+  final String currentFirebaseDocId;
+  final String currentSchoolFirebaseDocId;
   @override
   // TODO: implement props
   List<Object?> get props => [
@@ -36,7 +38,8 @@ class AppState extends Equatable {
         currentStudent,
         currentDate,
         currentAttendanceRecord,
-        currentAttendanceRecordFirebaseDocId,
+        currentFirebaseDocId,
+        currentSchoolFirebaseDocId,
       ];
   @override
   bool get stringify => true;
@@ -50,7 +53,8 @@ class AppState extends Equatable {
     StudentModel? currentStudent,
     DateTime? currentDate,
     AttendanceRecordModel? currentAttendanceRecord,
-    String? currentAttendanceRecordFirebaseDocId,
+    String? currentFirebaseDocId,
+    String? currentSchoolFirebaseDocId,
   }) {
     return AppState(
       schools: schools ?? this.schools,
@@ -62,9 +66,9 @@ class AppState extends Equatable {
       currentDate: currentDate ?? this.currentDate,
       currentAttendanceRecord:
           currentAttendanceRecord ?? this.currentAttendanceRecord,
-      currentAttendanceRecordFirebaseDocId:
-          currentAttendanceRecordFirebaseDocId ??
-              this.currentAttendanceRecordFirebaseDocId,
+      currentFirebaseDocId: currentFirebaseDocId ?? this.currentFirebaseDocId,
+      currentSchoolFirebaseDocId:
+          currentSchoolFirebaseDocId ?? this.currentSchoolFirebaseDocId,
     );
   }
 
@@ -78,7 +82,8 @@ class AppState extends Equatable {
       currentStudent: StudentModel.empty(),
       currentDate: DateTime.now(),
       currentAttendanceRecord: AttendanceRecordModel.empty(),
-      currentAttendanceRecordFirebaseDocId: '',
+      currentFirebaseDocId: '',
+      currentSchoolFirebaseDocId: '',
     );
   }
 }

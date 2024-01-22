@@ -58,4 +58,37 @@ class BusRouteModel extends Equatable {
     // Add the document to Firestore
     await FirebaseFirestore.instance.collection('busRoutes').add(busRouteJson);
   }
+
+  void updateBusRouteOnFirestore(docID) async {
+    // Create a new instance of SchoolModel
+    BusRouteModel newBusRoute = BusRouteModel(
+      busRouteNumber: busRouteNumber,
+      schoolName: schoolName,
+      areas: areas,
+      studentsIDs: studentsIDs,
+    );
+
+    // Convert SchoolModel to JSON
+    Map<String, dynamic> busRouteJson = newBusRoute.toJson();
+
+    // Add the document to Firestore
+    await FirebaseFirestore.instance
+        .collection('busRoutes')
+        .doc(docID)
+        .update(busRouteJson);
+  }
+
+  BusRouteModel copyWith({
+    int? busRouteNumber,
+    String? schoolName,
+    List<String>? areas,
+    List<String>? studentsIDs,
+  }) {
+    return BusRouteModel(
+      busRouteNumber: busRouteNumber ?? this.busRouteNumber,
+      schoolName: schoolName ?? this.schoolName,
+      areas: areas ?? this.areas,
+      studentsIDs: studentsIDs ?? this.studentsIDs,
+    );
+  }
 }

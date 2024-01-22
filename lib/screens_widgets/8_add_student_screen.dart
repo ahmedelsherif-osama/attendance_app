@@ -1,5 +1,6 @@
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/1_school_model.dart';
+import 'package:final_rta_attendance/models/2_bus_route_model.dart';
 import 'package:final_rta_attendance/models/3_student_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -284,6 +285,35 @@ class AddStudentScreen extends StatelessWidget {
                     .state
                     .currentStudent
                     .addStudentToFirestore();
+                context.read<AppCubit>().updateState(
+                      context.read<AppCubit>().state.copyWith(
+                            currentBusRoute: context
+                                .read<AppCubit>()
+                                .state
+                                .currentBusRoute
+                                .copyWith(
+                              studentsIDs: [
+                                ...context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentBusRoute
+                                    .studentsIDs,
+                                context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentStudent
+                                    .studentID
+                              ],
+                            ),
+                          ),
+                    );
+                final docID =
+                    context.read<AppCubit>().state.currentFirebaseDocId;
+                context
+                    .read<AppCubit>()
+                    .state
+                    .currentBusRoute
+                    .updateBusRouteOnFirestore(docID);
                 context.go('/Student_screen');
               },
               child: const Text('Add'),

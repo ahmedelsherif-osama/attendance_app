@@ -98,8 +98,8 @@ class SchoolList extends StatelessWidget {
                                   .read<AppCubit>()
                                   .state
                                   .copyWith(
-                                      currentAttendanceRecordFirebaseDocId:
-                                          docID));
+                                      currentSchoolFirebaseDocId: docID,
+                                      currentFirebaseDocId: docID));
                               var routesNames = school['routesNames'];
                               context.read<AppCubit>().updateState(
                                   context.read<AppCubit>().state.copyWith(

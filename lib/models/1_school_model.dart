@@ -41,6 +41,19 @@ class SchoolModel extends Equatable {
       routesNames: (json['routesNames'] as List<dynamic>).cast<String>(),
     );
   }
+  SchoolModel copyWith({
+    String? name,
+    String? address,
+    String? area,
+    List<String>? routesNames,
+  }) {
+    return SchoolModel(
+      name: name ?? this.name,
+      address: address ?? this.address,
+      area: area ?? this.area,
+      routesNames: routesNames ?? this.routesNames,
+    );
+  }
 
   void addSchoolToFirestore() async {
     // Create a new instance of SchoolModel
