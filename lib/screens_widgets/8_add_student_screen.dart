@@ -314,7 +314,7 @@ class AddStudentScreen extends StatelessWidget {
                     .state
                     .currentBusRoute
                     .updateBusRouteOnFirestore(docID);
-                context.go('/Student_screen');
+                context.go('/student_details_screen');
               },
               child: const Text('Add'),
             ),

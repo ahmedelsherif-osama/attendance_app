@@ -90,13 +90,15 @@ class BusRouteScreen extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          TextFormField(
-                            initialValue: '${busRoute.schoolName}',
-                            style: TextStyle(
-                              fontSize: (MediaQuery.of(context).size.height +
-                                      MediaQuery.of(context).size.width) /
-                                  100,
-                              fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: TextFormField(
+                              initialValue: '${busRoute.schoolName}',
+                              style: TextStyle(
+                                fontSize: (MediaQuery.of(context).size.height +
+                                        MediaQuery.of(context).size.width) /
+                                    100,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
