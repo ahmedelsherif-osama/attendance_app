@@ -1,8 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
-import 'package:final_rta_attendance/cubit/app_state.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
-import 'package:final_rta_attendance/models/3_student_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +12,13 @@ class BusRouteScreen2 extends StatelessWidget {
   Widget build(BuildContext context) {
     BusRouteModel busRoute = context.read<AppCubit>().state.currentBusRoute;
 
-    List studentList = busRoute.studentsIDs;
+    // List studentList = busRoute.studentsIDs;
+    List studentList = [
+      "student 1",
+      "student 2",
+      "student 3",
+      "student 4",
+    ];
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
@@ -43,6 +47,22 @@ class BusRouteScreen2 extends StatelessWidget {
                   child: TextFormField(initialValue: "Apple School"),
                 ),
               ],
+            ),
+            SizedBox(
+              height: height * 0.1,
+            ),
+            SizedBox(
+              height: height * 0.05,
+              child: const Text("Students:"),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: studentList.length,
+                itemBuilder: (context, index) {
+                  print(studentList[index]);
+                  return Text(studentList[index].toString());
+                },
+              ),
             ),
           ],
         ),
