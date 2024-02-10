@@ -2,6 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/1_school_model.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
+import 'package:final_rta_attendance/screens_widgets/1_school_list.dart';
+import 'package:final_rta_attendance/screens_widgets/3_bus_route_screen.dart';
+import 'package:final_rta_attendance/screens_widgets/3_bus_route_screen2.dart';
+import 'package:final_rta_attendance/screens_widgets/7_add_bus_route_screen.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -103,7 +107,11 @@ class SchoolScreen extends StatelessWidget {
                                           studentsIDs:
                                               studentsIDs.cast<String>(),
                                         )));
-                                context.go('/bus_route_screen');
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => BusRouteScreen2(),
+                                  ),
+                                );
                               },
                               title: Text('Bus Route ${busRoutes[index]}'),
                               subtitle: Text(schoolName),
@@ -142,7 +150,7 @@ class SchoolScreen extends StatelessWidget {
                                           .read<AppCubit>()
                                           .state
                                           .currentFirebaseDocId);
-                                  context.go('/');
+                                  Navigator.of(context).pushReplacement(route);
                                 },
                                 child: Text('Save changes'),
                               ),
@@ -151,7 +159,11 @@ class SchoolScreen extends StatelessWidget {
                               width: width * 0.2,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  context.go('/add_bus_route_screen');
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => AddBusRouteScreen(),
+                                    ),
+                                  );
                                 },
                                 child: Text('Add Bus Route'),
                               ),
@@ -168,7 +180,11 @@ class SchoolScreen extends StatelessWidget {
                                           .read<AppCubit>()
                                           .state
                                           .currentFirebaseDocId);
-                                  context.go('/');
+                                  Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                      builder: (context) => SchoolListScreen(),
+                                    ),
+                                  );
                                 },
                                 child: Text('Delete School'),
                               ),

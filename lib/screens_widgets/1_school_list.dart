@@ -2,11 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/1_school_model.dart';
 import 'package:final_rta_attendance/screens_widgets/2_school_screen.dart';
+import 'package:final_rta_attendance/screens_widgets/6_add_school_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SchoolList extends StatelessWidget {
-  final route = MaterialPageRoute(builder: (context) => SchoolList());
+class SchoolListScreen extends StatelessWidget {
+  final route = MaterialPageRoute(builder: (context) => SchoolListScreen());
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +113,10 @@ class SchoolList extends StatelessWidget {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              // context.go('/add_school_screen');
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) => AddSchoolScreen()),
+                              );
                             },
                             child: const Text('Add School'),
                           ),

@@ -1,8 +1,8 @@
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/1_school_model.dart';
+import 'package:final_rta_attendance/screens_widgets/2_school_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class AddSchoolScreen extends StatelessWidget {
   AddSchoolScreen({Key? key}) : super(key: key);
@@ -63,7 +63,9 @@ class AddSchoolScreen extends StatelessWidget {
                     .state
                     .currentSchool
                     .addSchoolToFirestore();
-                context.go('/school_screen');
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => SchoolScreen()),
+                );
               },
               child: const Text('Add'),
             ),

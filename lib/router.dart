@@ -1,3 +1,4 @@
+import 'package:final_rta_attendance/screens_widgets/3_bus_route_screen2.dart';
 import 'package:final_rta_attendance/screens_widgets/4_attendance_record_screen.dart';
 import 'package:final_rta_attendance/screens_widgets/3_bus_route_screen.dart';
 import 'package:final_rta_attendance/screens_widgets/1_school_list.dart';
@@ -12,7 +13,7 @@ GoRouter router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => SchoolList(),
+      builder: (context, state) => SchoolListScreen(),
     ),
     GoRoute(
       path: '/school_screen',
@@ -24,7 +25,7 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/bus_route_screen',
-      builder: (context, state) => BusRouteScreen(),
+      builder: (context, state) => BusRouteScreen2(),
     ),
     GoRoute(
       path: '/student_details_screen',
