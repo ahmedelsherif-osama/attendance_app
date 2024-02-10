@@ -7,6 +7,8 @@ import 'package:go_router/go_router.dart';
 
 class AddBusRouteScreen extends StatelessWidget {
   AddBusRouteScreen({Key? key}) : super(key: key);
+  final route = MaterialPageRoute(builder: (context) => AddBusRouteScreen());
+
   final TextEditingController routeNumberController = TextEditingController();
   final TextEditingController schoolNameController = TextEditingController();
 

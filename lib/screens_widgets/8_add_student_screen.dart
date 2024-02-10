@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class AddStudentScreen extends StatelessWidget {
+  final route = MaterialPageRoute(builder: (context) => AddStudentScreen());
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressDescriptionController =
       TextEditingController();

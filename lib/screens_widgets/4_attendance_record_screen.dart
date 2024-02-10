@@ -10,6 +10,9 @@ import 'package:intl/intl.dart';
 
 class AttendanceRecordScreen extends StatefulWidget {
   AttendanceRecordScreen({Key? key}) : super(key: key);
+  final route =
+      MaterialPageRoute(builder: (context) => AttendanceRecordScreen());
+
   var mappedData2;
 
   @override

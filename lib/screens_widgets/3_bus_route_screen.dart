@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 
 class BusRouteScreen extends StatelessWidget {
   BusRouteScreen({Key? key}) : super(key: key);
+  final route = MaterialPageRoute(builder: (context) => BusRouteScreen());
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentDetailsScreen extends StatelessWidget {
   StudentDetailsScreen({Key? key}) : super(key: key);
+  final route = MaterialPageRoute(builder: (context) => StudentDetailsScreen());
 
   @override
   Widget build(BuildContext context) {

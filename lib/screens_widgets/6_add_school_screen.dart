@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 
 class AddSchoolScreen extends StatelessWidget {
   AddSchoolScreen({Key? key}) : super(key: key);
+  final route = MaterialPageRoute(builder: (context) => AddSchoolScreen());
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController areaController = TextEditingController();
