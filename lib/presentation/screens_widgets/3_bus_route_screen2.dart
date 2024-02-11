@@ -68,6 +68,14 @@ class BusRouteScreen2 extends StatelessWidget {
             SizedBox(height: height * 0.1),
             Column(
               children: [
+                CustomButton(
+                    height: height,
+                    width: width,
+                    text: "Take Attendance",
+                    color: Colors.green),
+                SizedBox(
+                  height: height * 0.015,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -84,7 +92,7 @@ class BusRouteScreen2 extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  height: height * 0.1,
+                  height: height * 0.015,
                 ),
                 CustomButton(
                     height: height,
