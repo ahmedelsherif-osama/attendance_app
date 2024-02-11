@@ -1,5 +1,8 @@
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/1_school_list.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/4_attendance_record_screen.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/8_add_student_screen.dart';
 import 'package:final_rta_attendance/presentation/widgets/custom_button.dart';
 
 import 'package:flutter/material.dart';
@@ -73,7 +76,13 @@ class BusRouteScreen2 extends StatelessWidget {
                   width: width,
                   text: "Take Attendance",
                   color: Colors.green,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => AttendanceRecordScreen(),
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(
                   height: height * 0.015,
@@ -86,14 +95,22 @@ class BusRouteScreen2 extends StatelessWidget {
                       width: width,
                       color: Colors.blue,
                       text: "Save Changes",
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pushReplacement(route);
+                      },
                     ),
                     CustomButton(
                       height: height,
                       width: width,
                       color: Colors.blue,
                       text: "Add Student",
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AddStudentScreen(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -105,7 +122,13 @@ class BusRouteScreen2 extends StatelessWidget {
                   width: width,
                   color: Colors.red,
                   text: "Delete Bus Route",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) => SchoolListScreen(),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
