@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/cubit/app_state.dart';
 import 'package:final_rta_attendance/models/4_attendace_record_model.dart';
-import 'package:final_rta_attendance/screens_widgets/student_list_widget.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/student_list_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

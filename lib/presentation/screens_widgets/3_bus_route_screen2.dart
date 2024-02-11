@@ -1,5 +1,6 @@
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
+import 'package:final_rta_attendance/presentation/widgets/custom_button.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -63,6 +64,34 @@ class BusRouteScreen2 extends StatelessWidget {
                   return Text(studentList[index].toString());
                 },
               ),
+            ),
+            SizedBox(height: height * 0.1),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    CustomButton(
+                        height: height,
+                        width: width,
+                        color: Colors.blue,
+                        text: "Save Changes"),
+                    CustomButton(
+                        height: height,
+                        width: width,
+                        color: Colors.blue,
+                        text: "Add Student"),
+                  ],
+                ),
+                SizedBox(
+                  height: height * 0.1,
+                ),
+                CustomButton(
+                    height: height,
+                    width: width,
+                    color: Colors.red,
+                    text: "Delete Bus Route"),
+              ],
             ),
           ],
         ),
