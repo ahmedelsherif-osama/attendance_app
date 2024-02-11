@@ -43,6 +43,20 @@ class BusRouteScreen2 extends StatelessWidget {
                 FirebaseFirestore.instance.collection('students').snapshots(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
+                var studentCount = snapshot.data!.docs
+                    .where((element) =>
+                        element['busRouteNumber'].toString() ==
+                            busRoute.busRouteNumber.toString() &&
+                        element['schoolName'].toString() ==
+                            school.name.toString())
+                    .length;
+                var studentList = snapshot.data!.docs
+                    .where((element) =>
+                        element['busRouteNumber'].toString() ==
+                            busRoute.busRouteNumber.toString() &&
+                        element['schoolName'].toString() ==
+                            school.name.toString())
+                    .toList();
                 return Column(
                   children: [
                     Row(
@@ -78,11 +92,9 @@ class BusRouteScreen2 extends StatelessWidget {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        itemCount: studentList.length,
+                        itemCount: studentCount,
                         itemBuilder: (context, index) {
-                          snapshot.data!.docs.where();
-                          print(studentList[index]);
-                          return Text(studentList[index].toString());
+                          return Text(studentList[index]['name']);
                         },
                       ),
                     ),

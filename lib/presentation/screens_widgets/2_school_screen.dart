@@ -197,10 +197,10 @@ class SchoolScreen extends StatelessWidget {
                 );
               } catch (e) {
                 print(e);
-                return const CircularProgressIndicator();
+                return Center(child: const CircularProgressIndicator());
               }
             } else {
-              return const CircularProgressIndicator();
+              return Center(child: const CircularProgressIndicator());
             }
           },
         ),
