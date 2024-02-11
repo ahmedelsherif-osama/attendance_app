@@ -38,7 +38,7 @@ class BusRouteScreen2 extends StatelessWidget {
       body: Container(
         padding: EdgeInsets.symmetric(
             vertical: height * 0.1, horizontal: width * 0.1),
-        child: StreamBuilder<Object>(
+        child: StreamBuilder<QuerySnapshot>(
             stream:
                 FirebaseFirestore.instance.collection('students').snapshots(),
             builder: (context, snapshot) {
@@ -80,6 +80,7 @@ class BusRouteScreen2 extends StatelessWidget {
                       child: ListView.builder(
                         itemCount: studentList.length,
                         itemBuilder: (context, index) {
+                          snapshot.data!.docs.where();
                           print(studentList[index]);
                           return Text(studentList[index].toString());
                         },
