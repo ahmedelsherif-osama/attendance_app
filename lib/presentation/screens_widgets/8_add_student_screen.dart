@@ -310,7 +310,7 @@ class AddStudentScreen extends StatelessWidget {
                           ),
                     );
                 final docID =
-                    context.read<AppCubit>().state.currentFirebaseDocId;
+                    context.read<AppCubit>().state.currentBusRouteFirebaseDocId;
                 context
                     .read<AppCubit>()
                     .state

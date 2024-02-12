@@ -77,7 +77,7 @@ class _StudentListWidgetState extends State<StudentListWidget> {
                           print(context
                               .read<AppCubit>()
                               .state
-                              .currentFirebaseDocId);
+                              .currentBusRouteFirebaseDocId);
                           context
                               .read<AppCubit>()
                               .state
@@ -86,7 +86,7 @@ class _StudentListWidgetState extends State<StudentListWidget> {
                                 context
                                     .read<AppCubit>()
                                     .state
-                                    .currentFirebaseDocId,
+                                    .currentBusRouteFirebaseDocId,
                               );
                         },
                       ),
@@ -120,7 +120,7 @@ class _StudentListWidgetState extends State<StudentListWidget> {
                                 .updateAttendanceRecordOnFirestore(context
                                     .read<AppCubit>()
                                     .state
-                                    .currentFirebaseDocId);
+                                    .currentBusRouteFirebaseDocId);
                           },
                           icon: Icon(Icons.delete)),
                     ],

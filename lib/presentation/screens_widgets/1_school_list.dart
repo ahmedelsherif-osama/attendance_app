@@ -78,12 +78,10 @@ class SchoolListScreen extends StatelessWidget {
                                         element['name'] ==
                                         schoolList[index].name);
                                 var docID = school.id;
-                                context.read<AppCubit>().updateState(context
-                                    .read<AppCubit>()
-                                    .state
-                                    .copyWith(
-                                        currentSchoolFirebaseDocId: docID,
-                                        currentFirebaseDocId: docID));
+                                context.read<AppCubit>().updateState(
+                                    context.read<AppCubit>().state.copyWith(
+                                          currentSchoolFirebaseDocId: docID,
+                                        ));
                                 var routesNames = school['routesNames'];
                                 context.read<AppCubit>().updateState(
                                     context.read<AppCubit>().state.copyWith(

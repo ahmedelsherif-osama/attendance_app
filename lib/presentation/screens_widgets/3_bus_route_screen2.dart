@@ -153,6 +153,45 @@ class BusRouteScreen2 extends StatelessWidget {
                           color: Colors.red,
                           text: "Delete Bus Route",
                           onTap: () {
+                            var busRoute =
+                                context.read<AppCubit>().state.currentBusRoute;
+                            var busRouteDocId = context
+                                .read<AppCubit>()
+                                .state
+                                .currentBusRouteFirebaseDocId;
+                            busRoute.deleteBusRouteFromFirestore(busRouteDocId);
+
+                            var school =
+                                context.read<AppCubit>().state.currentSchool;
+
+                            List<String> newBusRoutes = [];
+                            school.routesNames.forEach((element) {
+                              if (element.toString() !=
+                                  busRoute.busRouteNumber.toString()) {
+                                newBusRoutes.add(element);
+                              }
+                            });
+
+                            context.read<AppCubit>().updateState(
+                                context.read<AppCubit>().state.copyWith(
+                                        currentSchool: school.copyWith(
+                                      routesNames: newBusRoutes,
+                                    )));
+                            context
+                                .read<AppCubit>()
+                                .state
+                                .currentSchool
+                                .updateSchoolOnFirestore(context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentSchoolFirebaseDocId);
+                            context.read<AppCubit>().updateState(
+                                  context.read<AppCubit>().state.copyWith(
+                                        currentBusRoute: BusRouteModel.empty(),
+                                        currentBusRouteFirebaseDocId: "",
+                                      ),
+                                );
+
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                 builder: (context) => SchoolListScreen(),

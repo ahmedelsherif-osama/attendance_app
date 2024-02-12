@@ -94,7 +94,7 @@ class SchoolScreen extends StatelessWidget {
                                     .id;
                                 context.read<AppCubit>().updateState(
                                       context.read<AppCubit>().state.copyWith(
-                                            currentFirebaseDocId: docID,
+                                            currentBusRouteFirebaseDocId: docID,
                                           ),
                                     );
                                 context.read<AppCubit>().updateState(
@@ -107,6 +107,10 @@ class SchoolScreen extends StatelessWidget {
                                           studentsIDs:
                                               studentsIDs.cast<String>(),
                                         )));
+                                context.read<AppCubit>().updateState(
+                                      context.read<AppCubit>().state.copyWith(
+                                          currentBusRouteFirebaseDocId: docID),
+                                    );
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => BusRouteScreen2(),
@@ -149,7 +153,7 @@ class SchoolScreen extends StatelessWidget {
                                       .updateSchoolOnFirestore(context
                                           .read<AppCubit>()
                                           .state
-                                          .currentFirebaseDocId);
+                                          .currentSchoolFirebaseDocId);
                                   Navigator.of(context).pushReplacement(route);
                                 },
                                 child: Text('Save changes'),
@@ -179,7 +183,7 @@ class SchoolScreen extends StatelessWidget {
                                       .deleteSchoolFromFirestore(context
                                           .read<AppCubit>()
                                           .state
-                                          .currentFirebaseDocId);
+                                          .currentSchoolFirebaseDocId);
                                   Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                       builder: (context) => SchoolListScreen(),

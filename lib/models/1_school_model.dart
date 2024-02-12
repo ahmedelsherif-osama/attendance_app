@@ -83,16 +83,6 @@ class SchoolModel extends Equatable {
   }
 
   void deleteSchoolFromFirestore(docId) async {
-    // Create a new instance of SchoolModel
-    SchoolModel newSchool = SchoolModel(
-        name: name, address: address, area: area, routesNames: routesNames);
-
-    // Convert SchoolModel to JSON
-    Map<String, dynamic> schoolJson = newSchool.toJson();
-
-    print(docId);
-
-    // Add the document to Firestore
     await FirebaseFirestore.instance.collection('schools').doc(docId).delete();
   }
 }

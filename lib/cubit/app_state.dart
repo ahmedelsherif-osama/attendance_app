@@ -14,8 +14,10 @@ class AppState extends Equatable {
     required this.currentStudent,
     required this.currentDate,
     required this.currentAttendanceRecord,
-    required this.currentFirebaseDocId,
     required this.currentSchoolFirebaseDocId,
+    required this.currentBusRouteFirebaseDocId,
+    required this.currentStudentFirebaseDocId,
+    required this.currentAttendanceRecordFirebaseDocId,
   });
   final List<SchoolModel> schools;
   final List<BusRouteModel> busRoutes;
@@ -25,8 +27,11 @@ class AppState extends Equatable {
   final StudentModel currentStudent;
   final DateTime currentDate;
   final AttendanceRecordModel currentAttendanceRecord;
-  final String currentFirebaseDocId;
   final String currentSchoolFirebaseDocId;
+  final String currentBusRouteFirebaseDocId;
+  final String currentStudentFirebaseDocId;
+  final String currentAttendanceRecordFirebaseDocId;
+
   @override
   // TODO: implement props
   List<Object?> get props => [
@@ -38,8 +43,10 @@ class AppState extends Equatable {
         currentStudent,
         currentDate,
         currentAttendanceRecord,
-        currentFirebaseDocId,
         currentSchoolFirebaseDocId,
+        currentBusRouteFirebaseDocId,
+        currentStudentFirebaseDocId,
+        currentAttendanceRecordFirebaseDocId,
       ];
   @override
   bool get stringify => true;
@@ -53,8 +60,10 @@ class AppState extends Equatable {
     StudentModel? currentStudent,
     DateTime? currentDate,
     AttendanceRecordModel? currentAttendanceRecord,
-    String? currentFirebaseDocId,
     String? currentSchoolFirebaseDocId,
+    String? currentBusRouteFirebaseDocId,
+    String? currentStudentFirebaseDocId,
+    String? currentAttendanceRecordFirebaseDocId,
   }) {
     return AppState(
       schools: schools ?? this.schools,
@@ -66,9 +75,15 @@ class AppState extends Equatable {
       currentDate: currentDate ?? this.currentDate,
       currentAttendanceRecord:
           currentAttendanceRecord ?? this.currentAttendanceRecord,
-      currentFirebaseDocId: currentFirebaseDocId ?? this.currentFirebaseDocId,
       currentSchoolFirebaseDocId:
           currentSchoolFirebaseDocId ?? this.currentSchoolFirebaseDocId,
+      currentBusRouteFirebaseDocId:
+          currentBusRouteFirebaseDocId ?? this.currentBusRouteFirebaseDocId,
+      currentStudentFirebaseDocId:
+          currentStudentFirebaseDocId ?? this.currentStudentFirebaseDocId,
+      currentAttendanceRecordFirebaseDocId:
+          currentAttendanceRecordFirebaseDocId ??
+              this.currentAttendanceRecordFirebaseDocId,
     );
   }
 
@@ -82,8 +97,10 @@ class AppState extends Equatable {
       currentStudent: StudentModel.empty(),
       currentDate: DateTime.now(),
       currentAttendanceRecord: AttendanceRecordModel.empty(),
-      currentFirebaseDocId: '',
       currentSchoolFirebaseDocId: '',
+      currentBusRouteFirebaseDocId: '',
+      currentStudentFirebaseDocId: '',
+      currentAttendanceRecordFirebaseDocId: '',
     );
   }
 }

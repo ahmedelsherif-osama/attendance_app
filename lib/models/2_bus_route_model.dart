@@ -78,6 +78,15 @@ class BusRouteModel extends Equatable {
         .update(busRouteJson);
   }
 
+  void deleteBusRouteFromFirestore(docId) async {
+    print(docId);
+
+    await FirebaseFirestore.instance
+        .collection('busRoutes')
+        .doc(docId)
+        .delete();
+  }
+
   BusRouteModel copyWith({
     int? busRouteNumber,
     String? schoolName,
