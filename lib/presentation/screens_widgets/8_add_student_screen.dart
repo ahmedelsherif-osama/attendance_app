@@ -2,6 +2,7 @@ import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/1_school_model.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
 import 'package:final_rta_attendance/models/3_student_model.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/3_bus_route_screen2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -89,6 +90,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (int.tryParse(value!) == null || value.isEmpty) {
@@ -106,6 +108,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (int.tryParse(value!) == null || value.isEmpty) {
@@ -123,6 +126,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (int.tryParse(value!) == null || value.isEmpty) {
@@ -141,6 +145,7 @@ class AddStudentScreen extends StatelessWidget {
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                        keyboardType: TextInputType.number,
                         validator: (value) {
                           if (int.tryParse(value!) == null || value.isEmpty) {
                             return 'Please enter a valid group number';
@@ -175,6 +180,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (int.tryParse(value!) == null || value.isEmpty) {
@@ -203,6 +209,7 @@ class AddStudentScreen extends StatelessWidget {
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                        keyboardType: TextInputType.number,
                         validator: (value) {
                           if (double.tryParse(value!) == null ||
                               value.isEmpty ||
@@ -221,6 +228,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (double.tryParse(value!) == null ||
@@ -240,6 +248,7 @@ class AddStudentScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width * 0.3,
                       height: MediaQuery.of(context).size.height * 0.09,
                       child: TextFormField(
+                        keyboardType: TextInputType.number,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (int.tryParse(value!) == null || value.isEmpty) {
@@ -316,7 +325,11 @@ class AddStudentScreen extends StatelessWidget {
                     .state
                     .currentBusRoute
                     .updateBusRouteOnFirestore(docID);
-                context.go('/student_details_screen');
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => BusRouteScreen2(),
+                  ),
+                );
               },
               child: const Text('Add'),
             ),

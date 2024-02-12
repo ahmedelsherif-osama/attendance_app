@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/3_bus_route_screen2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -86,8 +87,11 @@ class AddBusRouteScreen extends StatelessWidget {
                     'routesNames':
                         FieldValue.arrayUnion([routeNumberController.text]),
                   });
-
-                  context.go('/bus_route_screen');
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => BusRouteScreen2(),
+                    ),
+                  );
                 });
               },
               child: const Text('Add'),

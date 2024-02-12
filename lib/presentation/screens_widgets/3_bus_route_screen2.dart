@@ -57,6 +57,7 @@ class BusRouteScreen2 extends StatelessWidget {
                         element['schoolName'].toString() ==
                             school.name.toString())
                     .toList();
+
                 return Column(
                   children: [
                     Row(
@@ -160,6 +161,18 @@ class BusRouteScreen2 extends StatelessWidget {
                                 .state
                                 .currentBusRouteFirebaseDocId;
                             busRoute.deleteBusRouteFromFirestore(busRouteDocId);
+                            studentList.forEach((element) {
+                              if (element['busRouteNumber'].toString() ==
+                                  busRoute.busRouteNumber.toString()) {
+                                print(element.id);
+                                FirebaseFirestore.instance
+                                    .collection("students")
+                                    .doc(element.id)
+                                    .update({
+                                  'busRouteNumber': '',
+                                });
+                              }
+                            });
 
                             var school =
                                 context.read<AppCubit>().state.currentSchool;
