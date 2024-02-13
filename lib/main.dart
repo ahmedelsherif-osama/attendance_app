@@ -4,7 +4,6 @@ import 'package:final_rta_attendance/firebase_options.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/1_school_list.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/2_school_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/3_bus_route_screen.dart';
-import 'package:final_rta_attendance/presentation/screens_widgets/3_bus_route_screen2.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/4_attendance_record_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/5_student_details_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/6_add_school_screen.dart';
@@ -42,7 +41,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => SchoolListScreen(),
         '/school_screen': (context) => SchoolScreen(),
-        '/bus_route_screen': (context) => BusRouteScreen2(),
+        '/bus_route_screen': (context) => BusRouteScreen(),
         '/attendance_record_screen': (context) => AttendanceRecordScreen(),
         '/student_details_screen': (context) => StudentDetailsScreen(),
         '/add_school_screen': (context) => AddSchoolScreen(),
