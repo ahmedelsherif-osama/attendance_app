@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/1_school_model.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
+import 'package:final_rta_attendance/models/3_student_model.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/1_school_list.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/4_attendance_record_screen.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/5_student_details_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/8_add_student_screen.dart';
 import 'package:final_rta_attendance/presentation/widgets/custom_button.dart';
 
@@ -91,15 +93,95 @@ class BusRouteScreen2 extends StatelessWidget {
                       height: height * 0.05,
                       child: const Text("Students:"),
                     ),
+                    SizedBox(height: height * 0.1),
                     Expanded(
-                      child: ListView.builder(
-                        itemCount: studentCount,
-                        itemBuilder: (context, index) {
-                          return Text(studentList[index]['name']);
-                        },
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            columnSpacing: width * 0.1,
+                            columns: const [
+                              DataColumn(label: Text("ID")),
+                              DataColumn(label: Text("Name")),
+                              DataColumn(label: Text("Grade")),
+                              DataColumn(label: Text("Group")),
+                              DataColumn(label: Text("Phone")),
+                              DataColumn(label: Text("Address")),
+                            ],
+                            rows: List<DataRow>.generate(
+                              studentList.length,
+                              (index) {
+                                var student = studentList[index];
+                                return DataRow(
+                                  cells: [
+                                    DataCell(
+                                      Text(student['studentID'].toString()),
+                                    ),
+                                    DataCell(
+                                      Text(student['name']),
+                                    ),
+                                    DataCell(
+                                      Text(student['grade'].toString()),
+                                    ),
+                                    DataCell(
+                                      Text(student['group'].toString()),
+                                    ),
+                                    DataCell(
+                                      Text(student['primaryPhoneNumber']
+                                          .toString()),
+                                    ),
+                                    DataCell(
+                                      Text(student['addressDescription']),
+                                    ),
+                                  ],
+                                  onSelectChanged: (bool? selected) {
+                                    if (selected != null && selected) {
+                                      print(
+                                          "Clicked on student with ID: ${student['studentID']}");
+                                      StudentModel studentModel = StudentModel(
+                                        name: student['name'],
+                                        studentID: student['studentID'],
+                                        primaryPhoneNumber:
+                                            student['primaryPhoneNumber'],
+                                        fatherPhoneNumber:
+                                            student['fatherPhoneNumber'],
+                                        grade: student['grade'],
+                                        group: student['group'],
+                                        longtitude: student['longtitude'],
+                                        latitude: student['latitude'],
+                                        addressDescription:
+                                            student['addressDescription'],
+                                        makkani: student['makkani'],
+                                        schoolName: student['schoolName'],
+                                        busRouteNumber:
+                                            student['busRouteNumber'],
+                                      );
+                                      context.read<AppCubit>().updateState(
+                                            context
+                                                .read<AppCubit>()
+                                                .state
+                                                .copyWith(
+                                                  currentStudent: studentModel,
+                                                  currentStudentFirebaseDocId:
+                                                      student.id,
+                                                ),
+                                          );
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              StudentDetailsScreen(),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                    SizedBox(height: height * 0.1),
                     Column(
                       children: [
                         CustomButton(
