@@ -209,6 +209,75 @@ class BusRouteScreen extends StatelessWidget {
                               color: Colors.blue,
                               text: "Save Changes",
                               onTap: () {
+                                BusRouteModel busRouteModel = context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentBusRoute
+                                    .copyWith(
+                                      busRouteNumber: int.parse(
+                                          busRouteNumberController.text),
+                                      schoolName: schoolNameController.text,
+                                    );
+                                var currentSchoolBusRoutes = context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentSchool
+                                    .routesNames;
+                                var newBusRoutes = [];
+                                currentSchoolBusRoutes.forEach((element) {
+                                  if (element.toString() ==
+                                      context
+                                          .read<AppCubit>()
+                                          .state
+                                          .currentBusRoute
+                                          .busRouteNumber
+                                          .toString()) {
+                                    newBusRoutes
+                                        .add(busRouteNumberController.text);
+                                  } else {
+                                    newBusRoutes.add(element);
+                                  }
+                                });
+                                context.read<AppCubit>().updateState(
+                                    context.read<AppCubit>().state.copyWith(
+                                          currentBusRoute: busRouteModel,
+                                          currentSchool: SchoolModel.empty(),
+                                        ));
+                                var busRouteDocId = context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentBusRouteFirebaseDocId;
+                                FirebaseFirestore.instance
+                                    .collection('busRoutes')
+                                    .doc(busRouteDocId)
+                                    .update({
+                                  'busRouteNumber':
+                                      int.parse(busRouteNumberController.text),
+                                  'schoolName': schoolNameController.text,
+                                });
+
+                                var schoolDocId = context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentSchoolFirebaseDocId;
+
+                                FirebaseFirestore.instance
+                                    .collection('schools')
+                                    .doc(schoolDocId)
+                                    .update({
+                                  'routesNames': newBusRoutes,
+                                });
+
+                                studentList.forEach((element) {
+                                  FirebaseFirestore.instance
+                                      .collection('students')
+                                      .doc(element.id)
+                                      .update({
+                                    'busRouteNumber':
+                                        int.parse(busRouteNumberController.text)
+                                  });
+                                });
+
                                 Navigator.of(context).pushReplacement(route);
                               },
                             ),
