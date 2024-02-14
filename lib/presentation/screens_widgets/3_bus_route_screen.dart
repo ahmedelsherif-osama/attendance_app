@@ -16,6 +16,72 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class BusRouteScreen extends StatelessWidget {
   final route = MaterialPageRoute(builder: (context) => BusRouteScreen());
 
+  Future<bool> checkIfBusRouteNumberExistsWithinSchool(
+      busRouteNumber, schoolName) async {
+    bool doesBusRouteExist = false;
+    var querySnapshot = await FirebaseFirestore.instance
+        .collection('schools')
+        .where('name', isEqualTo: schoolName)
+        .get();
+    var schoolFirebaseDocId = querySnapshot.docs.first.id;
+
+    var schoolDoc = await FirebaseFirestore.instance
+        .collection('schools')
+        .doc(schoolFirebaseDocId)
+        .get();
+
+    var data = schoolDoc.data();
+    List<dynamic> routeNames = data?['routeNames'];
+    if (routeNames.contains(busRouteNumber.toString())) {
+      doesBusRouteExist = true;
+    }
+    return doesBusRouteExist;
+  }
+
+  Future<bool> checkIfNewSchoolExists(String newSchoolName) async {
+    bool doesSchoolExist = false;
+    var schoolsCollection = FirebaseFirestore.instance.collection('schools');
+
+    // Query to check if a school with the given name already exists
+    QuerySnapshot querySnapshot =
+        await schoolsCollection.where('name', isEqualTo: newSchoolName).get();
+
+    // If there is at least one document with the given name, set doesSchoolExist to true
+    if (querySnapshot.docs.isNotEmpty) {
+      doesSchoolExist = true;
+    }
+
+    return doesSchoolExist;
+  }
+
+  void removeRouteFromSchoolOnFireBaseDoc(
+      busRouteNumber, schoolDocId, currentBusRouteNames) {
+    final newBusRouteNames = [];
+    currentBusRouteNames.forEach((Element) {
+      if (Element.toString() != busRouteNumber.toString()) {
+        newBusRouteNames.add(Element);
+      }
+    });
+    FirebaseFirestore.instance
+        .collection("schools")
+        .doc(schoolDocId)
+        .update({'busRouteName': newBusRouteNames});
+  }
+
+  bool checkIfSchoolIsChanged(originalSchool, newSchool) {
+    if (originalSchool.toString() == newSchool.toString()) {
+      return true;
+    }
+    return false;
+  }
+
+  bool checkIfBusRouteNumberIsChanged(originalBusRoute, newBusRoute) {
+    if (originalBusRoute.toString() == newBusRoute.toString()) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     final BusRouteModel busRoute =
@@ -25,6 +91,8 @@ class BusRouteScreen extends StatelessWidget {
         TextEditingController(text: busRoute.busRouteNumber.toString());
     final schoolNameController =
         TextEditingController(text: school.name.toString());
+    final currentSchoolFirebaseDocId =
+        context.read<AppCubit>().state.currentSchoolFirebaseDocId;
 
     // List studentList = busRoute.studentsIDs;
     List studentList = [
@@ -209,76 +277,88 @@ class BusRouteScreen extends StatelessWidget {
                               color: Colors.blue,
                               text: "Save Changes",
                               onTap: () {
-                                BusRouteModel busRouteModel = context
-                                    .read<AppCubit>()
-                                    .state
-                                    .currentBusRoute
-                                    .copyWith(
-                                      busRouteNumber: int.parse(
-                                          busRouteNumberController.text),
-                                      schoolName: schoolNameController.text,
-                                    );
-                                var currentSchoolBusRoutes = context
-                                    .read<AppCubit>()
-                                    .state
-                                    .currentSchool
-                                    .routesNames;
-                                var newBusRoutes = [];
-                                currentSchoolBusRoutes.forEach((element) {
-                                  if (element.toString() ==
-                                      context
-                                          .read<AppCubit>()
-                                          .state
-                                          .currentBusRoute
-                                          .busRouteNumber
-                                          .toString()) {
-                                    newBusRoutes
-                                        .add(busRouteNumberController.text);
-                                  } else {
-                                    newBusRoutes.add(element);
+                                var isSchoolChanged = checkIfSchoolIsChanged(
+                                    school.name, schoolNameController.text);
+                                var isBusRouteNumberChanged =
+                                    checkIfBusRouteNumberIsChanged(
+                                        busRoute.busRouteNumber,
+                                        busRouteNumberController.text);
+                                if (isSchoolChanged == true) {
+                                  if (isBusRouteNumberChanged == true) {
+                                    removeRouteFromSchoolOnFireBaseDoc(
+                                        busRoute.busRouteNumber,
+                                        currentSchoolFirebaseDocId,
+                                        school.routesNames);
+
+                                    var doesNewSchoolExist =
+                                        checkIfNewSchoolExists(
+                                            schoolNameController.text);
+                                    if (doesNewSchoolExist == true) {
+                                      var doesBusRouteNumberExist =
+                                          checkIfBusRouteNumberExistsWithinSchool(
+                                              busRoute.busRouteNumber
+                                                  .toString(),
+                                              schoolNameController.text);
+
+                                      if (doesBusRouteNumberExist == true) {
+                                        print("already exists");
+                                        return;
+                                      }
+                                      if (doesBusRouteNumberExist == false) {
+                                        addBusRouteToSchool();
+                                      }
+                                    }
+                                    if (doesNewSchoolExist == false) {
+                                      createNewSchoolOnFireBase();
+                                      addBusRouteToSchool();
+                                    }
                                   }
-                                });
-                                context.read<AppCubit>().updateState(
-                                    context.read<AppCubit>().state.copyWith(
-                                          currentBusRoute: busRouteModel,
-                                          currentSchool: SchoolModel.empty(),
-                                        ));
-                                var busRouteDocId = context
-                                    .read<AppCubit>()
-                                    .state
-                                    .currentBusRouteFirebaseDocId;
-                                FirebaseFirestore.instance
-                                    .collection('busRoutes')
-                                    .doc(busRouteDocId)
-                                    .update({
-                                  'busRouteNumber':
-                                      int.parse(busRouteNumberController.text),
-                                  'schoolName': schoolNameController.text,
-                                });
+                                  if (isBusRouteNumberChanged == false) {
+                                    removeBusRouteFromSchoolOnFirebaseDoc();
+                                    var doesNewSchoolExist =
+                                        checkIfNewSchoolExist();
+                                    if (doesNewSchoolExist == true) {
+                                      var doesBusRouteNumberExist =
+                                          checkIfBusRouteNumberExistsWithinSchool();
 
-                                var schoolDocId = context
-                                    .read<AppCubit>()
-                                    .state
-                                    .currentSchoolFirebaseDocId;
-
-                                FirebaseFirestore.instance
-                                    .collection('schools')
-                                    .doc(schoolDocId)
-                                    .update({
-                                  'routesNames': newBusRoutes,
-                                });
-
-                                studentList.forEach((element) {
-                                  FirebaseFirestore.instance
-                                      .collection('students')
-                                      .doc(element.id)
-                                      .update({
-                                    'busRouteNumber':
-                                        int.parse(busRouteNumberController.text)
-                                  });
-                                });
-
-                                Navigator.of(context).pushReplacement(route);
+                                      if (doesBusRouteNumberExist == true) {
+                                        print("already exists");
+                                        return;
+                                      }
+                                      if (doesBusRouteNumberExist == false) {
+                                        addBusRouteToSchool();
+                                      }
+                                    }
+                                    if (doesNewSchoolExist == false) {
+                                      createNewSchoolOnFireBase();
+                                      addBusRouteToSchool();
+                                    }
+                                  }
+                                  updateBusRouteDocOnFirebase();
+                                  updateCurrentBusRouteOnState();
+                                  updateCurrentSchoolDocOnFirebase();
+                                  updateCurrentSchoolOnState();
+                                  updateStudentsOnFirebase();
+                                }
+                                if (isSchoolChanged == false) {
+                                  if (isBusRouteNumberChanged == true) {
+                                    var doesBusRouteNumberExist =
+                                        checkIfBusRouteNumberExistsWithinSchool();
+                                    if (doesBusRouteNumberExist == true) {
+                                      print("Already exists");
+                                    }
+                                    if (doesBusRouteNumberExist == false) {
+                                      updateBusRouteNumberOnFirebaseDoc();
+                                      updateCurrentBusRouteOnState();
+                                      updateRouteNameOnSchoolOnFirebaseDoc();
+                                      updateCurrentSchoolOnState();
+                                      updateStudentsOnFireBase();
+                                    }
+                                  }
+                                  if (isBusRouteNumberChanged == false) {
+                                    return;
+                                  }
+                                }
                               },
                             ),
                             CustomButton(
