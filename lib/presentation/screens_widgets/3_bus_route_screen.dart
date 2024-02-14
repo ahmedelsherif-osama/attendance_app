@@ -16,6 +16,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class BusRouteScreen extends StatelessWidget {
   final route = MaterialPageRoute(builder: (context) => BusRouteScreen());
 
+  Future<void> createNewSchoolOnFireBase(schoolName) async {
+    FirebaseFirestore.instance
+        .collection('schools')
+        .add({'name': schoolName.toString()});
+  }
+
+  Future<void> addBusRouteToSchoolOnFirebase(busRouteNumber, schoolName) async {
+    var newRouteNames = [];
+    var querySnapshot = await FirebaseFirestore.instance
+        .collection('schools')
+        .where('name', isEqualTo: schoolName)
+        .get();
+    var schoolFirebaseDocId = querySnapshot.docs.first.id;
+    var oldRouteNames = querySnapshot.docs.first.data()['routesNames'];
+    newRouteNames = oldRouteNames.add(busRouteNumber.toString());
+    FirebaseFirestore.instance
+        .collection('schools')
+        .doc(schoolFirebaseDocId)
+        .update({'routesNames': newRouteNames});
+  }
+
   Future<bool> checkIfBusRouteNumberExistsWithinSchool(
       busRouteNumber, schoolName) async {
     bool doesBusRouteExist = false;
@@ -305,21 +326,32 @@ class BusRouteScreen extends StatelessWidget {
                                         return;
                                       }
                                       if (doesBusRouteNumberExist == false) {
-                                        addBusRouteToSchool();
+                                        addBusRouteToSchoolOnFirebase(
+                                            busRouteNumberController.text,
+                                            schoolNameController.text);
                                       }
                                     }
                                     if (doesNewSchoolExist == false) {
-                                      createNewSchoolOnFireBase();
-                                      addBusRouteToSchool();
+                                      createNewSchoolOnFireBase(
+                                          schoolNameController.text);
+                                      addBusRouteToSchoolOnFirebase(
+                                          busRouteNumberController.text,
+                                          schoolNameController.text);
                                     }
                                   }
                                   if (isBusRouteNumberChanged == false) {
-                                    removeBusRouteFromSchoolOnFirebaseDoc();
+                                    removeRouteFromSchoolOnFireBaseDoc(
+                                        busRoute.busRouteNumber.toString(),
+                                        currentSchoolFirebaseDocId,
+                                        school.routesNames);
                                     var doesNewSchoolExist =
-                                        checkIfNewSchoolExist();
+                                        checkIfNewSchoolExists(
+                                            schoolNameController.text);
                                     if (doesNewSchoolExist == true) {
                                       var doesBusRouteNumberExist =
-                                          checkIfBusRouteNumberExistsWithinSchool();
+                                          checkIfBusRouteNumberExistsWithinSchool(
+                                              busRouteNumberController.text,
+                                              schoolNameController.text);
 
                                       if (doesBusRouteNumberExist == true) {
                                         print("already exists");
@@ -330,7 +362,8 @@ class BusRouteScreen extends StatelessWidget {
                                       }
                                     }
                                     if (doesNewSchoolExist == false) {
-                                      createNewSchoolOnFireBase();
+                                      createNewSchoolOnFireBase(
+                                          schoolNameController.text);
                                       addBusRouteToSchool();
                                     }
                                   }
