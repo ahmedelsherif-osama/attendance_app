@@ -16,17 +16,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class BusRouteScreen extends StatelessWidget {
   final route = MaterialPageRoute(builder: (context) => BusRouteScreen());
 
-  void updateCurrentBusRouteOnState(
-      context, busRoute, busRouteNumber, schoolName) {
-    BusRouteModel newBusRoute = BusRouteModel(
-        busRouteNumber: int.parse(busRouteNumber),
-        schoolName: schoolName,
-        areas: busRoute.areas,
-        studentsIDs: busRoute.studentsIDs);
-    context.read<AppCubit>().updateState(
-        context.read<AppCubit>().state.copyWith(currentBusRoute: newBusRoute));
-  }
-
   Future<void> createNewSchoolOnFireBase(schoolName) async {
     FirebaseFirestore.instance
         .collection('schools')
@@ -369,25 +358,17 @@ class BusRouteScreen extends StatelessWidget {
                                         return;
                                       }
                                       if (doesBusRouteNumberExist == false) {
-                                        addBusRouteToSchoolOnFirebase(
-                                            busRouteNumberController.text,
-                                            schoolNameController.text);
+                                        addBusRouteToSchool();
                                       }
                                     }
                                     if (doesNewSchoolExist == false) {
                                       createNewSchoolOnFireBase(
                                           schoolNameController.text);
-                                      addBusRouteToSchoolOnFirebase(
-                                          busRouteNumberController.text,
-                                          schoolNameController.text);
+                                      addBusRouteToSchool();
                                     }
                                   }
                                   updateBusRouteDocOnFirebase();
-                                  updateCurrentBusRouteOnState(
-                                      context,
-                                      busRoute,
-                                      busRouteNumberController.text,
-                                      schoolNameController.text);
+                                  updateCurrentBusRouteOnState();
                                   updateCurrentSchoolDocOnFirebase();
                                   updateCurrentSchoolOnState();
                                   updateStudentsOnFirebase();
@@ -401,11 +382,7 @@ class BusRouteScreen extends StatelessWidget {
                                     }
                                     if (doesBusRouteNumberExist == false) {
                                       updateBusRouteNumberOnFirebaseDoc();
-                                      updateCurrentBusRouteOnState(
-                                          context,
-                                          busRoute,
-                                          busRouteNumberController.text,
-                                          schoolNameController.text);
+                                      updateCurrentBusRouteOnState();
                                       updateRouteNameOnSchoolOnFirebaseDoc();
                                       updateCurrentSchoolOnState();
                                       updateStudentsOnFireBase();
