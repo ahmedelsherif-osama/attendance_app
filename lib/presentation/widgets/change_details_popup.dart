@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:flutter/material.dart';
 
 class ChangeDetailsPopup extends StatefulWidget {
@@ -7,6 +8,35 @@ class ChangeDetailsPopup extends StatefulWidget {
 }
 
 class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
+  void updateBusRouteNumberOnCurrentBusRouteOnState(
+      context, newBusRouteNumber) {
+    var currentBusRoute = context.read<AppCubit>().state.currentBusRoute;
+    var newBusRoute =
+        currentBusRoute.copyWith(busRouteNumber: newBusRouteNumber);
+    var currentState = context.read<AppCubit>().state;
+    var newState = currentState.copyWith(currentBusRoute: newBusRoute);
+    context.read<AppCubit>().updateState(newState);
+  }
+
+  void updateBusRouteNumberOnCurrentBusRouteOnFirebase(
+      currentBusRoute, busRouteDocId) {}
+  void updateBusRouteNumberOnCurrentSchoolOnState(context, newBusRouteNumber) {
+    var currentSchool = context.read<AppCubit>().state.currentSchool;
+    var currentRoutesNames = currentSchool.routesNames;
+
+    if (currentRoutesNames.contains(newBusRouteNumber)) {
+      return;
+    }
+    var newRoutesNames = currentRoutesNames.add(newBusRouteNumber);
+    var newSchool = currentSchool.copyWith(routesNames: newRoutesNames);
+
+    var currentState = context.read<AppCubit>().state;
+    var newState = currentState.copyWith(currentSchool: newSchool);
+    context.read<AppCubit>().updateState(newState);
+  }
+
+  void updateBusRouteNumberOnCurrentSchoolOnFirebase(
+      currentSchool, schoolDocId) {}
   TextEditingController _schoolNameController = TextEditingController();
   TextEditingController _busRouteNumberController = TextEditingController();
 
@@ -104,15 +134,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                     )
                   : _buildDropdownMenu(),
             ),
-            // IconButton(
-            //   icon: Icon(_isEditingSchool ? Icons.save : Icons.edit),
-            //   onPressed: () {
-            //     setState(() {
-            //       _isEditingSchool = !_isEditingSchool;
-            //       _isAddingNewSchool = false;
-            //     });
-            //   },
-            // ),
           ],
         ),
         SizedBox(height: 8.0),
@@ -135,8 +156,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
   }
 
   Widget _buildDropdownMenu() {
-    // Replace this with the actual list of schools from your data source
-
     return DropdownButtonFormField<String>(
       items: schoolNames!.map((String school) {
         return DropdownMenuItem<String>(
@@ -162,23 +181,10 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
     return Row(
       children: [
         Expanded(
-          child: isEditing
-              ? TextFormField(
-                  controller: controller,
-                  decoration: InputDecoration(labelText: label),
-                )
-              : InputDecorator(
-                  decoration: InputDecoration(labelText: label),
-                  child: Text(
-                    controller.text,
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                ),
-        ),
-        // IconButton(
-        //   icon: Icon(isEditing ? Icons.save : Icons.edit),
-        //   onPressed: onPressed,
-        // ),
+            child: TextFormField(
+          controller: controller,
+          decoration: InputDecoration(labelText: label),
+        )),
       ],
     );
   }
