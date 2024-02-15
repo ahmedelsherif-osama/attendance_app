@@ -277,6 +277,7 @@ class BusRouteScreen extends StatelessWidget {
                               color: Colors.blue,
                               text: "Save Changes",
                               onTap: () {
+<<<<<<< HEAD
                                 var isSchoolChanged = checkIfSchoolIsChanged(
                                     school.name, schoolNameController.text);
                                 var isBusRouteNumberChanged =
