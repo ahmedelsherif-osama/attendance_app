@@ -21,18 +21,6 @@ class BusRouteScreen extends StatelessWidget {
     final BusRouteModel busRoute =
         context.read<AppCubit>().state.currentBusRoute;
     final SchoolModel school = context.read<AppCubit>().state.currentSchool;
-    final busRouteNumberController =
-        TextEditingController(text: busRoute.busRouteNumber.toString());
-    final schoolNameController =
-        TextEditingController(text: school.name.toString());
-
-    // List studentList = busRoute.studentsIDs;
-    List studentList = [
-      "student 1",
-      "student 2",
-      "student 3",
-      "student 4",
-    ];
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
@@ -70,8 +58,8 @@ class BusRouteScreen extends StatelessWidget {
                         ),
                         SizedBox(
                           width: width * 0.1,
-                          child: TextFormField(
-                            controller: busRouteNumberController,
+                          child: Text(
+                            busRoute.busRouteNumber.toString(),
                           ),
                         ),
                         SizedBox(
@@ -80,8 +68,8 @@ class BusRouteScreen extends StatelessWidget {
                         ),
                         SizedBox(
                           width: width * 0.3,
-                          child: TextFormField(
-                            controller: schoolNameController,
+                          child: Text(
+                            school.name,
                           ),
                         ),
                       ],
