@@ -64,7 +64,7 @@ class BusRouteScreen extends StatelessWidget {
                         ),
                         SizedBox(
                           width: width * 0.2,
-                          child: const Text("Good School: "),
+                          child: const Text("School: "),
                         ),
                         SizedBox(
                           width: width * 0.3,
@@ -81,7 +81,7 @@ class BusRouteScreen extends StatelessWidget {
                       height: height * 0.05,
                       child: const Text("Students:"),
                     ),
-                    SizedBox(height: height * 0.1),
+                    SizedBox(height: height * 0.01),
                     Expanded(
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
@@ -172,32 +172,21 @@ class BusRouteScreen extends StatelessWidget {
                     ),
                     Column(
                       children: [
-                        CustomButton(
-                          height: height,
-                          width: width,
-                          text: "Take Attendance",
-                          color: Colors.green,
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => AttendanceRecordScreen(),
-                              ),
-                            );
-                          },
-                        ),
-                        SizedBox(
-                          height: height * 0.015,
-                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             CustomButton(
                               height: height,
                               width: width,
-                              color: Colors.blue,
-                              text: "Save Changes",
+                              text: "Take Attendance",
+                              color: Colors.green,
                               onTap: () {
-                                Navigator.of(context).pushReplacement(route);
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        AttendanceRecordScreen(),
+                                  ),
+                                );
                               },
                             ),
                             CustomButton(
@@ -218,69 +207,96 @@ class BusRouteScreen extends StatelessWidget {
                         SizedBox(
                           height: height * 0.015,
                         ),
-                        CustomButton(
-                          height: height,
-                          width: width,
-                          color: Colors.red,
-                          text: "Delete Bus Route",
-                          onTap: () {
-                            var busRoute =
-                                context.read<AppCubit>().state.currentBusRoute;
-                            var busRouteDocId = context
-                                .read<AppCubit>()
-                                .state
-                                .currentBusRouteFirebaseDocId;
-                            busRoute.deleteBusRouteFromFirestore(busRouteDocId);
-                            studentList.forEach((element) {
-                              if (element['busRouteNumber'].toString() ==
-                                  busRoute.busRouteNumber.toString()) {
-                                print(element.id);
-                                FirebaseFirestore.instance
-                                    .collection("students")
-                                    .doc(element.id)
-                                    .update({
-                                  'busRouteNumber': '',
-                                });
-                              }
-                            });
-
-                            var school =
-                                context.read<AppCubit>().state.currentSchool;
-
-                            List<String> newBusRoutes = [];
-                            school.routesNames.forEach((element) {
-                              if (element.toString() !=
-                                  busRoute.busRouteNumber.toString()) {
-                                newBusRoutes.add(element);
-                              }
-                            });
-
-                            context.read<AppCubit>().updateState(
-                                context.read<AppCubit>().state.copyWith(
-                                        currentSchool: school.copyWith(
-                                      routesNames: newBusRoutes,
-                                    )));
-                            context
-                                .read<AppCubit>()
-                                .state
-                                .currentSchool
-                                .updateSchoolOnFirestore(context
+                        SizedBox(
+                          height: height * 0.015,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            CustomButton(
+                              height: height,
+                              width: width,
+                              color: Colors.blue,
+                              text: "Change details",
+                              onTap: () {},
+                            ),
+                            CustomButton(
+                              height: height,
+                              width: width,
+                              color: Colors.red,
+                              text: "Delete Bus Route",
+                              onTap: () {
+                                var busRoute = context
                                     .read<AppCubit>()
                                     .state
-                                    .currentSchoolFirebaseDocId);
-                            context.read<AppCubit>().updateState(
-                                  context.read<AppCubit>().state.copyWith(
-                                        currentBusRoute: BusRouteModel.empty(),
-                                        currentBusRouteFirebaseDocId: "",
-                                      ),
-                                );
+                                    .currentBusRoute;
+                                var busRouteDocId = context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentBusRouteFirebaseDocId;
+                                busRoute
+                                    .deleteBusRouteFromFirestore(busRouteDocId);
+                                studentList.forEach((element) {
+                                  if (element['busRouteNumber'].toString() ==
+                                      busRoute.busRouteNumber.toString()) {
+                                    print(element.id);
+                                    FirebaseFirestore.instance
+                                        .collection("students")
+                                        .doc(element.id)
+                                        .update({
+                                      'busRouteNumber': '',
+                                    });
+                                  }
+                                });
 
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (context) => SchoolListScreen(),
-                              ),
-                            );
-                          },
+                                var school = context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentSchool;
+
+                                List<String> newBusRoutes = [];
+                                school.routesNames.forEach((element) {
+                                  if (element.toString() !=
+                                      busRoute.busRouteNumber.toString()) {
+                                    newBusRoutes.add(element);
+                                  }
+                                });
+
+                                context.read<AppCubit>().updateState(
+                                    context.read<AppCubit>().state.copyWith(
+                                            currentSchool: school.copyWith(
+                                          routesNames: newBusRoutes,
+                                        )));
+                                context
+                                    .read<AppCubit>()
+                                    .state
+                                    .currentSchool
+                                    .updateSchoolOnFirestore(context
+                                        .read<AppCubit>()
+                                        .state
+                                        .currentSchoolFirebaseDocId);
+                                context.read<AppCubit>().updateState(
+                                      context.read<AppCubit>().state.copyWith(
+                                            currentBusRoute:
+                                                BusRouteModel.empty(),
+                                            currentBusRouteFirebaseDocId: "",
+                                          ),
+                                    );
+
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) => SchoolListScreen(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: height * 0.015,
+                        ),
+                        SizedBox(
+                          height: height * 0.015,
                         ),
                       ],
                     ),
