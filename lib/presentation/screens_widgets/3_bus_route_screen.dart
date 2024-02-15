@@ -76,7 +76,7 @@ class BusRouteScreen extends StatelessWidget {
                         ),
                         SizedBox(
                           width: width * 0.2,
-                          child: const Text("School: "),
+                          child: const Text("Good School: "),
                         ),
                         SizedBox(
                           width: width * 0.3,
