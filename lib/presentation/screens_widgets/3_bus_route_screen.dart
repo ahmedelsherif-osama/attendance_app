@@ -359,6 +359,9 @@ class BusRouteScreen extends StatelessWidget {
                                     return;
                                   }
                                 }
+=======
+                                Navigator.of(context).pushReplacement(route);
+>>>>>>> parent of 27960ce (Updated some logic, to update the busRoute details, in all 3 collections, schools, busroutes, students, once its updated in busroutescreen)
                               },
                             ),
                             CustomButton(
