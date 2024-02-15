@@ -278,6 +278,7 @@ class BusRouteScreen extends StatelessWidget {
                               text: "Save Changes",
                               onTap: () {
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 var isSchoolChanged = checkIfSchoolIsChanged(
                                     school.name, schoolNameController.text);
                                 var isBusRouteNumberChanged =
@@ -361,6 +362,8 @@ class BusRouteScreen extends StatelessWidget {
                                   }
                                 }
 =======
+=======
+>>>>>>> parent of 27960ce (Updated some logic, to update the busRoute details, in all 3 collections, schools, busroutes, students, once its updated in busroutescreen)
                                 Navigator.of(context).pushReplacement(route);
 >>>>>>> parent of 27960ce (Updated some logic, to update the busRoute details, in all 3 collections, schools, busroutes, students, once its updated in busroutescreen)
                               },
