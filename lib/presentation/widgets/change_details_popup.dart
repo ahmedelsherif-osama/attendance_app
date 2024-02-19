@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/3_bus_route_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+enum ChangeOption { BusRouteNumber, School }
 
 class ChangeDetailsPopup extends StatefulWidget {
   @override
@@ -8,35 +12,40 @@ class ChangeDetailsPopup extends StatefulWidget {
 }
 
 class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
+  ChangeOption? _selectedOption;
   void updateBusRouteNumberOnCurrentBusRouteOnState(
       context, newBusRouteNumber) {
-    var currentBusRoute = context.read<AppCubit>().state.currentBusRoute;
+    var currentBusRoute =
+        BlocProvider.of<AppCubit>(context).state.currentBusRoute;
     var newBusRoute =
         currentBusRoute.copyWith(busRouteNumber: newBusRouteNumber);
-    var currentState = context.read<AppCubit>().state;
+    var currentState = BlocProvider.of<AppCubit>(context).state;
     var newState = currentState.copyWith(currentBusRoute: newBusRoute);
-    context.read<AppCubit>().updateState(newState);
+    BlocProvider.of<AppCubit>(context).updateState(newState);
   }
 
   void updateBusRouteNumberOnCurrentBusRouteOnFirebase(
       currentBusRoute, busRouteDocId) {}
+
   void updateBusRouteNumberOnCurrentSchoolOnState(context, newBusRouteNumber) {
-    var currentSchool = context.read<AppCubit>().state.currentSchool;
+    var currentSchool = BlocProvider.of<AppCubit>(context).state.currentSchool;
     var currentRoutesNames = currentSchool.routesNames;
 
     if (currentRoutesNames.contains(newBusRouteNumber)) {
       return;
     }
-    var newRoutesNames = currentRoutesNames.add(newBusRouteNumber);
+    currentRoutesNames.add(newBusRouteNumber);
+    var newRoutesNames = currentRoutesNames;
     var newSchool = currentSchool.copyWith(routesNames: newRoutesNames);
 
-    var currentState = context.read<AppCubit>().state;
+    var currentState = BlocProvider.of<AppCubit>(context).state;
     var newState = currentState.copyWith(currentSchool: newSchool);
-    context.read<AppCubit>().updateState(newState);
+    BlocProvider.of<AppCubit>(context).updateState(newState);
   }
 
   void updateBusRouteNumberOnCurrentSchoolOnFirebase(
       currentSchool, schoolDocId) {}
+
   TextEditingController _schoolNameController = TextEditingController();
   TextEditingController _busRouteNumberController = TextEditingController();
 
@@ -69,25 +78,7 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text('Change Details'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (!_isEditingBusRouteNumber) _buildSchoolNameSection(),
-          if (!_isEditingSchool)
-            _buildTextField(
-              label: 'Bus Route Number',
-              controller: _busRouteNumberController,
-              isEditing: _isEditingBusRouteNumber,
-              onPressed: () {
-                setState(() {
-                  _isEditingBusRouteNumber = !_isEditingBusRouteNumber;
-                  _isEditingSchool = false;
-                  _isAddingNewSchool = false;
-                });
-              },
-            ),
-        ],
-      ),
+      content: _buildContent(),
       actions: [
         TextButton(
           onPressed: () {
@@ -97,7 +88,58 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
         ),
         TextButton(
           onPressed: () {
-            if (_isEditingSchool) {
+            if (_selectedOption == ChangeOption.BusRouteNumber) {
+              final existingBusRoutesWithinSameSchool =
+                  BlocProvider.of<AppCubit>(context)
+                      .state
+                      .currentSchool
+                      .routesNames;
+              final newBusRouteExists = existingBusRoutesWithinSameSchool
+                  .contains(_busRouteNumberController.text);
+              if (newBusRouteExists) {
+                print("error");
+              } else {
+                updateBusRouteNumberOnCurrentBusRouteOnState(
+                    context, int.parse(_busRouteNumberController.text));
+                print(BlocProvider.of<AppCubit>(context)
+                    .state
+                    .currentBusRoute
+                    .busRouteNumber
+                    .toString());
+                updateBusRouteNumberOnCurrentSchoolOnState(
+                    context, _busRouteNumberController.text);
+                print(BlocProvider.of<AppCubit>(context)
+                    .state
+                    .currentSchool
+                    .routesNames);
+
+                final currentBusRoute =
+                    BlocProvider.of<AppCubit>(context).state.currentBusRoute;
+                final currentSchool =
+                    BlocProvider.of<AppCubit>(context).state.currentSchool;
+                final busRouteDocId = BlocProvider.of<AppCubit>(context)
+                    .state
+                    .currentBusRouteFirebaseDocId;
+                final schoolDocId = BlocProvider.of<AppCubit>(context)
+                    .state
+                    .currentSchoolFirebaseDocId;
+
+                updateBusRouteNumberOnCurrentBusRouteOnFirebase(
+                    currentBusRoute, busRouteDocId);
+                print("busroute firebase");
+
+                updateBusRouteNumberOnCurrentSchoolOnFirebase(
+                    currentSchool, schoolDocId);
+                print("school firebase");
+
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => BusRouteScreen(),
+                  ),
+                );
+              }
+            } else if (_selectedOption == ChangeOption.School) {
+              // Handle school change
               if (_isAddingNewSchool) {
                 // Your function for adding a new school
                 // YourFunctionForNewSchool(_schoolNameController.text);
@@ -105,9 +147,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                 // Your function for selecting from the dropdown
                 // YourFunctionForSelectedSchool(_schoolNameController.text);
               }
-            } else if (_isEditingBusRouteNumber) {
-              // Your function for bus route number
-              // YourFunctionForBusRouteNumber(_busRouteNumberController.text);
             }
 
             // Close the dialog
@@ -117,6 +156,60 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
         ),
       ],
     );
+  }
+
+  Widget _buildContent() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ListTile(
+          title: Text('Change Bus Route Number'),
+          leading: Radio(
+            value: ChangeOption.BusRouteNumber,
+            groupValue: _selectedOption,
+            onChanged: (ChangeOption? value) {
+              setState(() {
+                _selectedOption = value;
+              });
+            },
+          ),
+        ),
+        ListTile(
+          title: Text('Change School'),
+          leading: Radio(
+            value: ChangeOption.School,
+            groupValue: _selectedOption,
+            onChanged: (ChangeOption? value) {
+              setState(() {
+                _selectedOption = value;
+              });
+            },
+          ),
+        ),
+        if (_selectedOption == ChangeOption.BusRouteNumber)
+          _buildBusRouteNumberSection(),
+        if (_selectedOption == ChangeOption.School) _buildSchoolSection(),
+      ],
+    );
+  }
+
+  Widget _buildBusRouteNumberSection() {
+    return _buildTextField(
+      label: 'Bus Route Number',
+      controller: _busRouteNumberController,
+      isEditing: _isEditingBusRouteNumber,
+      onPressed: () {
+        setState(() {
+          _isEditingBusRouteNumber = !_isEditingBusRouteNumber;
+          _isEditingSchool = false;
+          _isAddingNewSchool = false;
+        });
+      },
+    );
+  }
+
+  Widget _buildSchoolSection() {
+    return _buildSchoolNameSection();
   }
 
   Widget _buildSchoolNameSection() {
