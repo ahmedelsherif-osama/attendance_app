@@ -5,7 +5,6 @@ class AppCubit extends Cubit<AppState> {
   AppCubit(super.initialState);
 
   void updateState(AppState appState) {
-    print("inside update state");
     emit(appState);
   }
 }
