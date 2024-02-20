@@ -16,6 +16,30 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
   List<DropdownMenuEntry<dynamic>> schoolsDropDownEntries = [];
   List<String>? schoolNames;
 
+  Future<void> updateBusRouteNumberOnStudentsOnFirebase(
+      newCurrentBusRouteFromState, oldCurrentBusRoute) async {
+    print("inside method");
+    print(newCurrentBusRouteFromState.busRouteNumber);
+    print(newCurrentBusRouteFromState.schoolName);
+    var studentsOfBusRouteDocIds = [];
+    await FirebaseFirestore.instance
+        .collection("students")
+        .where("schoolName", isEqualTo: oldCurrentBusRoute.schoolName)
+        .where("busRouteNumber", isEqualTo: oldCurrentBusRoute.busRouteNumber)
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              studentsOfBusRouteDocIds.add(element.id);
+            }));
+    print(studentsOfBusRouteDocIds);
+    for (int index = 0; index < studentsOfBusRouteDocIds.length; index++) {
+      await FirebaseFirestore.instance
+          .collection("students")
+          .doc(studentsOfBusRouteDocIds[index])
+          .update(
+              {"busRouteNumber": newCurrentBusRouteFromState.busRouteNumber});
+    }
+  }
+
   Future<void> updateFirebaseDoc(
       collectionPath, firebaseDocId, fieldName, value) async {
     await FirebaseFirestore.instance
@@ -154,11 +178,12 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                     onPressed: () {
                       if (_changeSchoolOrBus == "Change Bus Route Number") {
                         // 1. update busroutenumber on currentbusroute on state
-                        final currentBusRoute =
+                        final oldCurrentBusRoute =
                             context.read<AppCubit>().state.currentBusRoute;
-                        final updatedCurrentBusRoute = currentBusRoute.copyWith(
-                            busRouteNumber:
-                                int.parse(busRouteNumberController.text));
+                        final updatedCurrentBusRoute =
+                            oldCurrentBusRoute.copyWith(
+                                busRouteNumber:
+                                    int.parse(busRouteNumberController.text));
                         final currentState = context.read<AppCubit>().state;
                         final newState = currentState.copyWith(
                             currentBusRoute: updatedCurrentBusRoute);
@@ -169,10 +194,18 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                             .read<AppCubit>()
                             .state
                             .currentBusRouteFirebaseDocId;
-                        updateFirebaseDoc("busRoutes", currentBusRouteDocId,
-                            "busRouteNumber", currentBusRoute.busRouteNumber);
+                        final newCurrentBusRouteFromState =
+                            context.read<AppCubit>().state.currentBusRoute;
+                        updateFirebaseDoc(
+                            "busRoutes",
+                            currentBusRouteDocId,
+                            "busRouteNumber",
+                            newCurrentBusRouteFromState.busRouteNumber);
 
                         // 3. update busroutesnumber on students on firebase
+                        updateBusRouteNumberOnStudentsOnFirebase(
+                            newCurrentBusRouteFromState, oldCurrentBusRoute);
+
                         // 4. update busroutenumber on currentschool on state
                         // 5. update busroutenumber on currentschool on firebase
                       }
