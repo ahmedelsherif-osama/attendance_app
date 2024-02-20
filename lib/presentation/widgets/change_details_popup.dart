@@ -234,6 +234,12 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                             .routesNames);
 
                         // 5. update busroutenumber on currentschool on firebase
+                        final currentSchoolDocId = context
+                            .read<AppCubit>()
+                            .state
+                            .currentSchoolFirebaseDocId;
+                        updateFirebaseDoc("schools", currentSchoolDocId,
+                            "routesNames", newCurrentSchoolRoutesNames);
                       }
                     },
                     child: Text("Save")),
