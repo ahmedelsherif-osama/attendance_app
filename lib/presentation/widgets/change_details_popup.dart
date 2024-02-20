@@ -140,7 +140,32 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                TextButton(onPressed: () {}, child: Text("Save")),
+                TextButton(
+                    onPressed: () {
+                      if (_changeSchoolOrBus == "Change Bus Route Number") {
+                        // 1. update busroutenumber on currentbusroute on state
+                        final currentBusRoute =
+                            context.read<AppCubit>().state.currentBusRoute;
+                        final updatedCurrentBusRoute = currentBusRoute.copyWith(
+                            busRouteNumber:
+                                int.parse(busRouteNumberController.text));
+                        final currentState = context.read<AppCubit>().state;
+                        final newState = currentState.copyWith(
+                            currentBusRoute: updatedCurrentBusRoute);
+                        context.read<AppCubit>().updateState(newState);
+                        print(context
+                            .read<AppCubit>()
+                            .state
+                            .currentBusRoute
+                            .busRouteNumber
+                            .toString());
+                        // 2. update busroutenumber on currentbusroute on firebase
+                        // 3. update busroutesnumber on students on firebase
+                        // 4. update busroutenumber on currentschool on state
+                        // 5. update busroutenumber on currentschool on firebase
+                      }
+                    },
+                    child: Text("Save")),
                 TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
