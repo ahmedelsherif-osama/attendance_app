@@ -16,6 +16,16 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
   List<DropdownMenuEntry<dynamic>> schoolsDropDownEntries = [];
   List<String>? schoolNames;
 
+  Future<void> updateFirebaseDoc(
+      collectionPath, firebaseDocId, fieldName, value) async {
+    await FirebaseFirestore.instance
+        .collection(collectionPath)
+        .doc(firebaseDocId)
+        .update({
+      fieldName: value,
+    });
+  }
+
   void initState() {
     super.initState();
     _fetchSchools().then((names) {
@@ -153,13 +163,15 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                         final newState = currentState.copyWith(
                             currentBusRoute: updatedCurrentBusRoute);
                         context.read<AppCubit>().updateState(newState);
-                        print(context
+
+                        // 2. update busroutenumber on currentbusroute on firebase
+                        final currentBusRouteDocId = context
                             .read<AppCubit>()
                             .state
-                            .currentBusRoute
-                            .busRouteNumber
-                            .toString());
-                        // 2. update busroutenumber on currentbusroute on firebase
+                            .currentBusRouteFirebaseDocId;
+                        updateFirebaseDoc("busRoutes", currentBusRouteDocId,
+                            "busRouteNumber", currentBusRoute.busRouteNumber);
+
                         // 3. update busroutesnumber on students on firebase
                         // 4. update busroutenumber on currentschool on state
                         // 5. update busroutenumber on currentschool on firebase
