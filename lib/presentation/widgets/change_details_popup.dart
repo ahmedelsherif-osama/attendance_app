@@ -207,6 +207,32 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                             newCurrentBusRouteFromState, oldCurrentBusRoute);
 
                         // 4. update busroutenumber on currentschool on state
+                        final oldCurrentSchool =
+                            context.read<AppCubit>().state.currentSchool;
+                        final oldCurrentSchoolRoutesNames =
+                            oldCurrentSchool.routesNames;
+                        List<String> newCurrentSchoolRoutesNames = [];
+                        oldCurrentSchoolRoutesNames.forEach((element) {
+                          if (element !=
+                              oldCurrentBusRoute.busRouteNumber.toString()) {
+                            newCurrentSchoolRoutesNames.add(element);
+                          }
+                        });
+                        newCurrentSchoolRoutesNames.add(
+                            newCurrentBusRouteFromState.busRouteNumber
+                                .toString());
+                        final newCurrentSchool = oldCurrentSchool.copyWith(
+                            routesNames: newCurrentSchoolRoutesNames);
+                        final oldState = context.read<AppCubit>().state;
+                        final newState2 =
+                            oldState.copyWith(currentSchool: newCurrentSchool);
+                        context.read<AppCubit>().updateState(newState2);
+                        print(context
+                            .read<AppCubit>()
+                            .state
+                            .currentSchool
+                            .routesNames);
+
                         // 5. update busroutenumber on currentschool on firebase
                       }
                     },
