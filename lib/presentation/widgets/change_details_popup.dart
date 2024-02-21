@@ -302,6 +302,23 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                               newCurrentBusRouteFromState, oldCurrentBusRoute);
 
                           // 4. update schoolname/new school on currentschool on state
+                          final currentBusRouteNumber = context
+                              .read<AppCubit>()
+                              .state
+                              .currentBusRoute
+                              .busRouteNumber;
+                          final newSchool = SchoolModel(
+                              name: schoolNameController.text,
+                              routesNames: [currentBusRouteNumber.toString()]);
+                          final oldState2 = context.read<AppCubit>().state;
+                          final newState2 =
+                              oldState2.copyWith(currentSchool: newSchool);
+                          context.read<AppCubit>().updateState(newState2);
+                          print(context
+                              .read<AppCubit>()
+                              .state
+                              .currentSchool
+                              .name);
                           // 5. update schoolname/new school on firebase
                           // 6. update new school firebase doc id on state
                         }
