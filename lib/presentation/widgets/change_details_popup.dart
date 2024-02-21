@@ -13,16 +13,35 @@ class ChangeDetailsPopup extends StatefulWidget {
 class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
   var _changeSchoolOrBus;
   bool _addingNewSchool = false;
+  var newSchoolFirebaseDocId;
   List<DropdownMenuEntry<dynamic>> schoolsDropDownEntries = [];
   List<String>? schoolNames;
 
+  Future<String> fetchSchoolFirebaseIdByName(schoolName) async {
+    String docID = "";
+    await FirebaseFirestore.instance
+        .collection("schools")
+        .where("name", isEqualTo: schoolName)
+        .get()
+        .then((value) => docID = value.docs.first.id);
+
+    BlocProvider.of<AppCubit>(context).updateState(
+        BlocProvider.of<AppCubit>(context)
+            .state
+            .copyWith(currentSchoolFirebaseDocId: docID));
+    return docID;
+  }
+
+  Future<void> createNewFirebaseDoc(collectionPath, jsonDoc) async {
+    try {
+      await FirebaseFirestore.instance.collection(collectionPath).add(jsonDoc);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   Future<void> updateBusRouteNumberOnStudentsOnFirebase(
       newCurrentBusRouteFromState, oldCurrentBusRoute) async {
-    print("inside method");
-    print(oldCurrentBusRoute.busRouteNumber);
-    print(oldCurrentBusRoute.schoolName);
-    print(newCurrentBusRouteFromState.busRouteNumber);
-    print(newCurrentBusRouteFromState.schoolName);
     var studentsOfBusRouteDocIds = [];
     await FirebaseFirestore.instance
         .collection("students")
@@ -33,7 +52,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
         .then((value) => value.docs.forEach((element) {
               studentsOfBusRouteDocIds.add(element.id);
             }));
-    print(studentsOfBusRouteDocIds);
     for (int index = 0; index < studentsOfBusRouteDocIds.length; index++) {
       await FirebaseFirestore.instance
           .collection("students")
@@ -45,11 +63,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
 
   Future<void> updateSchoolNameOnStudentsOnFirebase(
       newCurrentBusRouteFromState, oldCurrentBusRoute) async {
-    print("inside method");
-    print(oldCurrentBusRoute.busRouteNumber);
-    print(oldCurrentBusRoute.schoolName);
-    print(newCurrentBusRouteFromState.busRouteNumber);
-    print(newCurrentBusRouteFromState.schoolName);
     var studentsOfBusRouteDocIds = [];
     await FirebaseFirestore.instance
         .collection("students")
@@ -59,7 +72,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
         .then((value) => value.docs.forEach((element) {
               studentsOfBusRouteDocIds.add(element.id);
             }));
-    print(studentsOfBusRouteDocIds);
     for (int index = 0; index < studentsOfBusRouteDocIds.length; index++) {
       await FirebaseFirestore.instance
           .collection("students")
@@ -83,7 +95,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
     _fetchSchools().then((names) {
       setState(() {
         schoolNames = names;
-        print(schoolNames);
 
         // Initialize and clear the dropdown items list
         schoolsDropDownEntries = [];
@@ -150,7 +161,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                     onChanged: (value) {
                       setState(() {
                         _changeSchoolOrBus = "Change Bus Route Number";
-                        print("bus");
                       });
                     }),
                 Text("Change Bus Route Number"),
@@ -164,7 +174,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                     onChanged: (value) {
                       setState(() {
                         _changeSchoolOrBus = "Change School";
-                        print("school");
                       });
                     }),
                 Text("Change School"),
@@ -255,11 +264,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                         final newState2 =
                             oldState.copyWith(currentSchool: newCurrentSchool);
                         context.read<AppCubit>().updateState(newState2);
-                        print(context
-                            .read<AppCubit>()
-                            .state
-                            .currentSchool
-                            .routesNames);
 
                         // 5. update busroutenumber on currentschool on firebase
                         final currentSchoolDocId = context
@@ -314,13 +318,20 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                           final newState2 =
                               oldState2.copyWith(currentSchool: newSchool);
                           context.read<AppCubit>().updateState(newState2);
-                          print(context
-                              .read<AppCubit>()
-                              .state
-                              .currentSchool
-                              .name);
+
                           // 5. update schoolname/new school on firebase
-                          // 6. update new school firebase doc id on state
+                          final newSchoolFromState =
+                              context.read<AppCubit>().state.currentSchool;
+                          final newSchoolFromStateJson =
+                              newSchoolFromState.toJson();
+                          createNewFirebaseDoc(
+                              "schools", newSchoolFromStateJson);
+
+                          // 6. clear school firebase doc id on state, for now, when we go back to the school screen, or school list screen
+                          final oldState4 = context.read<AppCubit>().state;
+                          final newState4 = oldState4.copyWith(
+                              currentSchoolFirebaseDocId: "");
+                          context.read<AppCubit>().updateState(newState4);
                         }
                       }
                       Navigator.of(context).pop();
