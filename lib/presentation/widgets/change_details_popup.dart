@@ -19,13 +19,16 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
   Future<void> updateBusRouteNumberOnStudentsOnFirebase(
       newCurrentBusRouteFromState, oldCurrentBusRoute) async {
     print("inside method");
+    print(oldCurrentBusRoute.busRouteNumber);
+    print(oldCurrentBusRoute.schoolName);
     print(newCurrentBusRouteFromState.busRouteNumber);
     print(newCurrentBusRouteFromState.schoolName);
     var studentsOfBusRouteDocIds = [];
     await FirebaseFirestore.instance
         .collection("students")
         .where("schoolName", isEqualTo: oldCurrentBusRoute.schoolName)
-        .where("busRouteNumber", isEqualTo: oldCurrentBusRoute.busRouteNumber)
+        .where("busRouteNumber",
+            isEqualTo: oldCurrentBusRoute.busRouteNumber.toString())
         .get()
         .then((value) => value.docs.forEach((element) {
               studentsOfBusRouteDocIds.add(element.id);
