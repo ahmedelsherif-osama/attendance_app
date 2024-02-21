@@ -43,6 +43,31 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
     }
   }
 
+  Future<void> updateSchoolNameOnStudentsOnFirebase(
+      newCurrentBusRouteFromState, oldCurrentBusRoute) async {
+    print("inside method");
+    print(oldCurrentBusRoute.busRouteNumber);
+    print(oldCurrentBusRoute.schoolName);
+    print(newCurrentBusRouteFromState.busRouteNumber);
+    print(newCurrentBusRouteFromState.schoolName);
+    var studentsOfBusRouteDocIds = [];
+    await FirebaseFirestore.instance
+        .collection("students")
+        .where("schoolName", isEqualTo: oldCurrentBusRoute.schoolName)
+        .where("busRouteNumber", isEqualTo: oldCurrentBusRoute.busRouteNumber)
+        .get()
+        .then((value) => value.docs.forEach((element) {
+              studentsOfBusRouteDocIds.add(element.id);
+            }));
+    print(studentsOfBusRouteDocIds);
+    for (int index = 0; index < studentsOfBusRouteDocIds.length; index++) {
+      await FirebaseFirestore.instance
+          .collection("students")
+          .doc(studentsOfBusRouteDocIds[index])
+          .update({"schoolName": newCurrentBusRouteFromState.schoolName});
+    }
+  }
+
   Future<void> updateFirebaseDoc(
       collectionPath, firebaseDocId, fieldName, value) async {
     await FirebaseFirestore.instance
@@ -269,7 +294,13 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                               .schoolName;
                           updateFirebaseDoc("busRoutes", currentBusRouteDocID,
                               "schoolName", currentBusRouteSchoolNameFromState);
+
                           // 3. update schoolname on students on firebase
+                          final newCurrentBusRouteFromState =
+                              context.read<AppCubit>().state.currentBusRoute;
+                          updateSchoolNameOnStudentsOnFirebase(
+                              newCurrentBusRouteFromState, oldCurrentBusRoute);
+
                           // 4. update schoolname/new school on currentschool on state
                           // 5. update schoolname/new school on firebase
                           // 6. update new school firebase doc id on state
