@@ -12,7 +12,7 @@ class ChangeDetailsPopup extends StatefulWidget {
 
 class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
   var _changeSchoolOrBus;
-  bool? _addingNewSchool = false;
+  bool _addingNewSchool = false;
   List<DropdownMenuEntry<dynamic>> schoolsDropDownEntries = [];
   List<String>? schoolNames;
 
@@ -156,9 +156,9 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                     children: [
                       Checkbox(
                         value: _addingNewSchool,
-                        onChanged: (bool? value) {
+                        onChanged: (value) {
                           setState(() {
-                            _addingNewSchool = value;
+                            _addingNewSchool = value!;
                           });
                         },
                       ),
@@ -243,7 +243,39 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                             .currentSchoolFirebaseDocId;
                         updateFirebaseDoc("schools", currentSchoolDocId,
                             "routesNames", newCurrentSchoolRoutesNames);
+                      } else {
+                        if (_addingNewSchool) {
+                          // 1. update schoolname on busroute on state
+                          final oldCurrentBusRoute =
+                              context.read<AppCubit>().state.currentBusRoute;
+                          final newCurrentBusRoute =
+                              oldCurrentBusRoute.copyWith(
+                            schoolName: schoolNameController.text,
+                          );
+                          final oldState = context.read<AppCubit>().state;
+                          final newState = oldState.copyWith(
+                              currentBusRoute: newCurrentBusRoute);
+                          context.read<AppCubit>().updateState(newState);
+
+                          // 2. update schoolname on busroute on firebase
+                          final currentBusRouteDocID = context
+                              .read<AppCubit>()
+                              .state
+                              .currentBusRouteFirebaseDocId;
+                          final currentBusRouteSchoolNameFromState = context
+                              .read<AppCubit>()
+                              .state
+                              .currentBusRoute
+                              .schoolName;
+                          updateFirebaseDoc("busRoutes", currentBusRouteDocID,
+                              "schoolName", currentBusRouteSchoolNameFromState);
+                          // 3. update schoolname on students on firebase
+                          // 4. update schoolname/new school on currentschool on state
+                          // 5. update schoolname/new school on firebase
+                          // 6. update new school firebase doc id on state
+                        }
                       }
+                      Navigator.of(context).pop();
                     },
                     child: Text("Save")),
                 TextButton(
