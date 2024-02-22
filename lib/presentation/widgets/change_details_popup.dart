@@ -305,6 +305,42 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                           updateSchoolNameOnStudentsOnFirebase(
                               newCurrentBusRouteFromState, oldCurrentBusRoute);
 
+                          // 3.51 update routesnames on current school on state
+                          final oldCurrentSchool =
+                              context.read<AppCubit>().state.currentSchool;
+                          final List<String> NewCurrentSchoolRoutesNames = [];
+                          oldCurrentSchool.routesNames.forEach((element) {
+                            if (element !=
+                                oldCurrentBusRoute.busRouteNumber.toString()) {
+                              NewCurrentSchoolRoutesNames.add(element);
+                            }
+                          });
+                          print(NewCurrentSchoolRoutesNames);
+                          final newCurrentSchool = oldCurrentSchool.copyWith(
+                              routesNames: NewCurrentSchoolRoutesNames);
+                          final oldState4 = context.read<AppCubit>().state;
+                          final newState4 = oldState4.copyWith(
+                              currentSchool: newCurrentSchool);
+                          context.read<AppCubit>().updateState(newState4);
+                          print(
+                              "updated school routesnames on state ${context.read<AppCubit>().state.currentSchool.routesNames}");
+
+                          // 3.52 update routesnames on current school on firebase
+                          final currentSchoolFirebaseDocId = context
+                              .read<AppCubit>()
+                              .state
+                              .currentSchoolFirebaseDocId;
+                          final newRoutesNamesFromState = context
+                              .read<AppCubit>()
+                              .state
+                              .currentSchool
+                              .routesNames;
+                          updateFirebaseDoc(
+                              "schools",
+                              currentSchoolFirebaseDocId,
+                              "routesNames",
+                              newRoutesNamesFromState);
+
                           // 4. update schoolname/new school on currentschool on state
                           final currentBusRouteNumber = context
                               .read<AppCubit>()
@@ -328,10 +364,10 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                               "schools", newSchoolFromStateJson);
 
                           // 6. clear school firebase doc id on state, for now, when we go back to the school screen, or school list screen
-                          final oldState4 = context.read<AppCubit>().state;
-                          final newState4 = oldState4.copyWith(
+                          final oldState5 = context.read<AppCubit>().state;
+                          final newState5 = oldState5.copyWith(
                               currentSchoolFirebaseDocId: "");
-                          context.read<AppCubit>().updateState(newState4);
+                          context.read<AppCubit>().updateState(newState5);
                         }
                       }
                       Navigator.of(context).pop();
