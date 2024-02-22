@@ -11,7 +11,8 @@ class ChangeDetailsPopup extends StatefulWidget {
 }
 
 class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
-  var _schools;
+  var schoolModels;
+  var schoolRoutesNames;
   var _changeSchoolOrBus;
   bool _addingNewSchool = false;
   var newSchoolFirebaseDocId;
@@ -95,29 +96,38 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
     super.initState();
     _fetchSchools().then((schools) {
       setState(() {
-        _schools = schools;
-        schoolNames = schools.map((doc) => doc['name'] as String).toList();
-
+        print(schools.isEmpty);
+        print(schools[0].name);
+        // Update schoolModels instead of schoolNames
+        schoolModels = schools;
+        print(schoolModels.isEmpty);
+        print(schoolModels[0].name);
         // Initialize and clear the dropdown items list
         schoolsDropDownEntries = [];
 
         // Populate dropdown items here
-        schoolsDropDownEntries = schoolNames!
-            .map((name) => DropdownMenuEntry(
-                  value: name,
-                  label: name,
-                ))
-            .toList();
+        schoolModels.forEach(
+            (schoolModel) => schoolsDropDownEntries.add(DropdownMenuEntry(
+                  value: schoolModel.name,
+                  label: schoolModel.name,
+                )));
       });
     });
   }
 
   Future<List> _fetchSchools() async {
     try {
-      var schools =
+      var schoolsSnapshot =
           await FirebaseFirestore.instance.collection('schools').get();
-      return schools.docs;
-      //.map((doc) => doc['name'] as String).toList();
+
+      // Convert QuerySnapshot to List<SchoolModel>
+      List<SchoolModel> schools = schoolsSnapshot.docs.map((doc) {
+        Map<String, dynamic> data = doc.data();
+        return SchoolModel.fromJson(data);
+      }).toList();
+      print(schools.isEmpty);
+      print(schools[0].name);
+      return schools;
     } catch (e) {
       // Handle any errors that occurred during the fetch
       print('Error fetching schools: $e');
@@ -208,7 +218,12 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                       decoration: InputDecoration(labelText: 'New School Name'),
                     ),
                   if (_addingNewSchool == false)
-                    DropdownMenu(dropdownMenuEntries: schoolsDropDownEntries)
+                    DropdownMenu(
+                      dropdownMenuEntries: schoolsDropDownEntries,
+                      onSelected: (value) {
+                        schoolNameController.text = value;
+                      },
+                    )
                 ],
               ),
             Row(
@@ -388,10 +403,35 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                           final newState5 = oldState5.copyWith(
                               currentSchoolFirebaseDocId: "");
                           context.read<AppCubit>().updateState(newState5);
-                        } else {
-                          // 1. double check if new school name already exists, give eroor if true
+                        }
+                        if (!_addingNewSchool) {
+                          print("if is working");
                           // 2. if not, then check if in the new school a route with same number exists, er if tr
-                          // 3. if not, then update school name on cstudents from both schoolnbus on firebase
+                          final currentBusRoute =
+                              context.read<AppCubit>().state.currentBusRoute;
+                          schoolModels.forEach((model) => print(model.name));
+                          print(schoolNameController.text);
+                          final newSchool = schoolModels.firstWhere((element) =>
+                              element.name == schoolNameController.text);
+
+                          final newSchoolContainsSameBusRouteNumberAlready =
+                              newSchool.routesNames.contains(
+                                  currentBusRoute.busRouteNumber.toString());
+                          print(
+                              " new school contains same busroute number ${newSchoolContainsSameBusRouteNumberAlready}");
+                          if (newSchoolContainsSameBusRouteNumberAlready) {
+                            print(
+                                "error busroutenumber already exists within new school");
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  behavior: SnackBarBehavior.floating,
+                                  margin: EdgeInsets.only(bottom: 300),
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                      "A bus route number with same number already exists under the chosen school")),
+                            );
+                          }
+                          // // 3. if not, then update school name on cstudents from both schoolnbus on firebase
                           // 4. remove busroute number from current school on state
                           // 5. remove busroute number from current school on firebase
                           // 6. update currentschool on state to be the one with the right name, fetch from db
