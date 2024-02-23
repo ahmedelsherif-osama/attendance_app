@@ -430,8 +430,10 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                   content: Text(
                                       "A bus route number with same number already exists under the chosen school")),
                             );
+                            Navigator.of(context).pop();
                           }
                           // // 3. if not, then update school name on cstudents from both schoolnbus on firebase
+
                           // 4. remove busroute number from current school on state
                           // 5. remove busroute number from current school on firebase
                           // 6. update currentschool on state to be the one with the right name, fetch from db
