@@ -520,22 +520,58 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                     Navigator.of(context).pop();
                                   }
                                   // // 3. if not, then update school name on cstudents from both schoolnbus on firebase
-                                  print(studentList[0]['name']);
-                                  print(docIds[0]);
-                                  docIds.forEach((element) {
-                                    updateFirebaseDoc(
-                                        "students",
-                                        element,
-                                        "schoolName",
-                                        schoolNameController.text);
-                                  });
-                                  Navigator.of(context).pop();
+                                  if (studentList.isNotEmpty &&
+                                      studentList != null) {
+                                    print(studentList[0]['name']);
+                                    print(docIds[0]);
+                                    docIds.forEach((element) {
+                                      updateFirebaseDoc(
+                                          "students",
+                                          element,
+                                          "schoolName",
+                                          schoolNameController.text);
+                                    });
+                                  }
                                   // 4. remove busroute number from current school on state
+                                  var oldCurrentSchool = context
+                                      .read<AppCubit>()
+                                      .state
+                                      .currentSchool;
+                                  var oldRoutesNames =
+                                      oldCurrentSchool.routesNames;
+                                  var newRoutesNames = <String>[];
+                                  print("here");
+                                  oldRoutesNames.forEach((element) {
+                                    if (element.toString() !=
+                                        busRouteNumberController.text
+                                            .toString()) {
+                                      newRoutesNames.add(element);
+                                    }
+                                  });
+                                  var newCurrentSchool = oldCurrentSchool
+                                      .copyWith(routesNames: newRoutesNames);
+                                  var oldState = context.read<AppCubit>().state;
+                                  var newState = oldState.copyWith(
+                                      currentSchool: newCurrentSchool);
+                                  context
+                                      .read<AppCubit>()
+                                      .updateState(newState);
+                                  print(context
+                                      .read<AppCubit>()
+                                      .state
+                                      .currentSchool
+                                      .routesNames);
+                                  print(context
+                                      .read<AppCubit>()
+                                      .state
+                                      .currentSchool
+                                      .name);
                                   // 5. remove busroute number from current school on firebase
                                   // 6. update currentschool on state to be the one with the right name, fetch from db
                                   // 7. update current school on state to have the new busroute number addedto it
                                   // 8. update current docid to be for this new school
                                   // 9. update this new school on firbase
+                                  Navigator.of(context).pop();
                                 }
                               }
                               Navigator.of(context).pop();
