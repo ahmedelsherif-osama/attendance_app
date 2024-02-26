@@ -596,12 +596,14 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                       "routesNames",
                                       newRoutesNames2);
 
-                                  // 6. update currentschool on state to be the one with the right name, fetch from db
-                                  var newSchoolName = schoolNameController.text;
-                                  var newSchool2 = SchoolModel.empty();
-                                  fetchSchoolFromFirebaseByName(newSchoolName)
-                                      .then((value) {
-                                    newSchool2 = value;
+                                  try {
+                                    // 6. update current school on state to be the one with the right name, fetch from db
+                                    var newSchoolName =
+                                        schoolNameController.text;
+                                    var newSchool2 =
+                                        await fetchSchoolFromFirebaseByName(
+                                            newSchoolName);
+
                                     var oldState2 =
                                         context.read<AppCubit>().state;
                                     var newState2 = oldState2.copyWith(
@@ -617,8 +619,9 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                         .currentSchool
                                         .name;
                                     print(
-                                        "usecase 6: testing ${testSchool2Name}");
-                                    // 7. update current school on state to have the new busroute number addedto it
+                                        "usecase 6: testing $testSchool2Name");
+
+                                    // 7. update current school on state to have the new bus route number added to it
                                     var currentBusRouteNumber = context
                                         .read<AppCubit>()
                                         .state
@@ -628,12 +631,13 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                         .read<AppCubit>()
                                         .state
                                         .currentSchool;
-                                    var oldCurrentSchool2RoutesNames =
-                                        currentSchool2.routesNames;
+
                                     var newCurrentSchool2RoutesNames =
-                                        oldCurrentSchool2RoutesNames;
+                                        List<String>.from(
+                                            currentSchool2.routesNames);
                                     newCurrentSchool2RoutesNames
                                         .add(currentBusRouteNumber.toString());
+
                                     var newCurrentSchool2 =
                                         currentSchool2.copyWith(
                                             routesNames:
@@ -645,6 +649,7 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                     context
                                         .read<AppCubit>()
                                         .updateState(newState3);
+
                                     //testing
                                     var testSchool3 = context
                                         .read<AppCubit>()
@@ -652,68 +657,77 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                         .currentSchool;
                                     print(
                                         "usecase 7: testing ${testSchool3.name} ${testSchool3.routesNames}");
-                                  });
 
-                                  // 8. update current docid (on state) to be for this new school
-                                  var oldCurrentSchoolDocId = context
-                                      .read<AppCubit>()
-                                      .state
-                                      .currentSchoolFirebaseDocId;
-                                  var currentSchoolName = context
-                                      .read<AppCubit>()
-                                      .state
-                                      .currentSchool
-                                      .name;
-                                  var newCurrentSchoolDocId =
-                                      fetchSchoolFirebaseIdByName(
-                                          currentSchoolName) as String;
-                                  var oldState4 =
-                                      context.read<AppCubit>().state;
-                                  var newState4 = oldState4.copyWith(
-                                      currentSchoolFirebaseDocId:
-                                          newCurrentSchoolDocId);
-                                  context
-                                      .read<AppCubit>()
-                                      .updateState(newState4);
+                                    // 8. update current docid (on state) to be for this new school
+                                    var oldCurrentSchoolDocId = context
+                                        .read<AppCubit>()
+                                        .state
+                                        .currentSchoolFirebaseDocId;
+                                    var currentSchoolName = context
+                                        .read<AppCubit>()
+                                        .state
+                                        .currentSchool
+                                        .name;
+                                    var newCurrentSchoolDocId;
+                                    fetchSchoolFirebaseIdByName(
+                                            currentSchoolName)
+                                        .then((value) {
+                                      newCurrentSchoolDocId = value;
 
-                                  //testing
-                                  var testDocID1 = oldCurrentSchoolDocId;
-                                  var testDocId2 = context
-                                      .read<AppCubit>()
-                                      .state
-                                      .currentSchoolFirebaseDocId;
-                                  print(
-                                      "usecase 8  testing ${testDocID1}  ${testDocId2}");
+                                      var oldState4 =
+                                          context.read<AppCubit>().state;
+                                      var newState4 = oldState4.copyWith(
+                                          currentSchoolFirebaseDocId:
+                                              newCurrentSchoolDocId);
+                                      context
+                                          .read<AppCubit>()
+                                          .updateState(newState4);
 
-                                  // 9. update this new school on firbase
-                                  var schoolBeforeUpdateFromFirebase =
-                                      fetchSchoolFromFirebaseByName(
-                                              schoolNameController.text)
-                                          as SchoolModel;
-                                  var oldRoutesNamesFromFirebase =
-                                      schoolBeforeUpdateFromFirebase
-                                          .routesNames;
-                                  var newCurrentSchoolRoutesNames = context
-                                      .read<AppCubit>()
-                                      .state
-                                      .currentSchool
-                                      .routesNames;
-                                  updateFirebaseDoc(
-                                      "schools",
-                                      newCurrentSchoolDocId,
-                                      "routesNames",
-                                      newCurrentSchoolRoutesNames);
+                                      //testing
+                                      var testDocID1 = oldCurrentSchoolDocId;
+                                      var testDocId2 = context
+                                          .read<AppCubit>()
+                                          .state
+                                          .currentSchoolFirebaseDocId;
+                                      print(
+                                          "usecase 8  testing $testDocID1  $testDocId2");
+                                    });
 
-                                  //testing
-                                  var testSchool4 =
-                                      fetchSchoolFromFirebaseByName(
-                                              schoolNameController.text)
-                                          as SchoolModel;
-                                  var newRoutesNamesFromFirebase =
-                                      testSchool4.routesNames;
-                                  print(
-                                      "usecase 9: testing ${oldRoutesNamesFromFirebase}  ${newRoutesNamesFromFirebase}");
-                                  Navigator.of(context).pop();
+                                    // 9. update this new school on Firebase
+                                    var schoolBeforeUpdateFromFirebase =
+                                        await fetchSchoolFromFirebaseByName(
+                                                schoolNameController.text)
+                                            as SchoolModel;
+                                    var oldRoutesNamesFromFirebase =
+                                        schoolBeforeUpdateFromFirebase
+                                            .routesNames;
+                                    var newCurrentSchoolRoutesNames = context
+                                        .read<AppCubit>()
+                                        .state
+                                        .currentSchool
+                                        .routesNames;
+
+                                    await updateFirebaseDoc(
+                                        "schools",
+                                        newCurrentSchoolDocId,
+                                        "routesNames",
+                                        newCurrentSchoolRoutesNames);
+
+                                    //testing
+                                    var testSchool4 =
+                                        await fetchSchoolFromFirebaseByName(
+                                                schoolNameController.text)
+                                            as SchoolModel;
+                                    var newRoutesNamesFromFirebase =
+                                        testSchool4.routesNames;
+                                    print(
+                                        "usecase 9: testing $oldRoutesNamesFromFirebase  $newRoutesNamesFromFirebase");
+
+                                    Navigator.of(context).pop();
+                                  } catch (error) {
+                                    print("Error: $error");
+                                    // Handle errors as needed
+                                  }
                                 }
                               }
                               Navigator.of(context).pop();
