@@ -16,6 +16,16 @@ class AttendanceRecordModel extends Equatable {
   List<Object?> get props =>
       [schoolName, busRouteNumber, studentAttendanceCheckboxes, date];
 
+  factory AttendanceRecordModel.fromJson(Map<String, dynamic> json) {
+    return AttendanceRecordModel(
+      schoolName: json['schoolName'] as String,
+      busRouteNumber: json['busRouteNumber'] as int,
+      studentAttendanceCheckboxes:
+          json['studentAttendanceCheckboxes'] ?? [] as Map<String, bool>,
+      date: json['date'] as DateTime,
+    );
+  }
+
   factory AttendanceRecordModel.empty() {
     return AttendanceRecordModel(
       schoolName: '',
