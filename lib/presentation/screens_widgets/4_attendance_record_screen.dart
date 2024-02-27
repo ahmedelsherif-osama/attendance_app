@@ -1,310 +1,64 @@
+import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AttendanceRecordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final studentsFromBusRouteFromState =
+        context.read<AppCubit>().state.currentBusRoute.studentsIDs;
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    if (studentsFromBusRouteFromState.isEmpty) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            children: [
+              SizedBox(
+                height: height * .4,
+              ),
+              Text("No students in bus route yet."),
+              SizedBox(
+                height: height * .1,
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/add_student_screen', (route) => false);
+                },
+                child: const Text("Add student"),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    //if busroutes has students already
+    // 1. fetch attendance records from DB, for this school/busroutes number
+    // 1.5 have a calendar with records dates, upon selection the record from the date will show, if empty will create new record
+    // 1.7 on the calendar, if record exists on date, it will show as highlighted or blue
+    // 1.8 limit the calendar for crrent or previous dates
+    // 2. check if there is a record with today's date for this school and busroute number
+    // 3. if it exists already, then display that record, with edit options there
+    // 4. if not, then create a new record on state where all students are still absent
+    // 5. upon pressing submit, if the record is new, create a new doc on db
+    // 6. upon pressing submit, if the record exists already, update the doc on db with new values
+    return Scaffold(
       body: Center(
-        child: Text("Attendance Record Screen"),
+        child: Column(
+          children: [
+            SizedBox(
+              height: height * 0.1,
+            ),
+            const Text("student1"),
+            const Text("student2"),
+            const Text("student3"),
+            const Text("student4"),
+            const Text("student5"),
+          ],
+        ),
       ),
     );
   }
 }
-
-
-
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:final_rta_attendance/cubit/app_cubit.dart';
-// import 'package:final_rta_attendance/cubit/app_state.dart';
-// import 'package:final_rta_attendance/models/4_attendace_record_model.dart';
-// import 'package:final_rta_attendance/presentation/screens_widgets/student_list_widget.dart';
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:intl/intl.dart';
-
-// class AttendanceRecordScreen extends StatefulWidget {
-//   AttendanceRecordScreen({Key? key}) : super(key: key);
-//   final route =
-//       MaterialPageRoute(builder: (context) => AttendanceRecordScreen());
-
-//   var mappedData2;
-
-//   @override
-//   State<AttendanceRecordScreen> createState() => _AttendanceRecordScreenState();
-// }
-
-// class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
-//   @override
-//   Widget build(BuildContext context) {
-//     // 1. create date format
-//     final dateFormat = DateFormat('dd/MM/yyyy');
-//     // 2. get the date from the state
-
-//     final date = dateFormat.format(context.read<AppCubit>().state.currentDate);
-//     // 3. get the bus route number from the state
-//     final busRoute =
-//         context.read<AppCubit>().state.currentBusRoute.busRouteNumber;
-//     // 4. get the school name from the state
-//     final schoolName = context.read<AppCubit>().state.currentSchool.name;
-//     // 5. get the students from the state
-//     final students = context.read<AppCubit>().state.students;
-//     print("students: $students busRoute: $busRoute schoolName: $schoolName");
-//     // 6. get the attendance records from the database, for this school and bus route
-//     return Scaffold(
-//       body: Container(
-//         height: MediaQuery.of(context).size.height * 0.9,
-//         width: MediaQuery.of(context).size.width * 0.9,
-//         child: StreamBuilder(
-//           stream: FirebaseFirestore.instance
-//               .collection('attendanceRecords')
-//               .where('busRouteNumber', isEqualTo: busRoute)
-//               .where('schoolName', isEqualTo: schoolName)
-//               .snapshots(),
-//           builder: (context, snapshot) {
-//             if (snapshot.hasData) {
-//               // 7. check if there is a document for state's date
-//               try {
-//                 print("what");
-//                 print(date);
-//                 print("finished");
-
-//                 var statesDateDoc = snapshot.data!.docs.firstWhere((element) =>
-//                     dateFormat.format(element['date'].toDate()) == date);
-
-//                 context
-//                     .read<AppCubit>()
-//                     .updateState(context.read<AppCubit>().state.copyWith(
-//                           currentFirebaseDocId: statesDateDoc.id,
-//                         ));
-
-//                 var mappedData2 = statesDateDoc['studentAttendanceCheckboxes']
-//                     .map((key, value) {
-//                   debugPrint('key: $key value: $value');
-//                   return MapEntry(key, value);
-//                 });
-
-//                 //here do what we were doing before    return Column(
-//                 return BlocBuilder<AppCubit, AppState>(
-//                   builder: (context, state) {
-//                     return Column(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       crossAxisAlignment: CrossAxisAlignment.center,
-//                       children: [
-//                         Row(
-//                           mainAxisAlignment: MainAxisAlignment.center,
-//                           children: [
-//                             DropdownButton<String>(
-//                               items: snapshot.data!.docs.map((e) {
-//                                 return DropdownMenuItem(
-//                                   child: Text(
-//                                       dateFormat.format(e['date'].toDate())),
-//                                   value: dateFormat.format(e['date'].toDate()),
-//                                 );
-//                               }).toList(),
-//                               value: dateFormat.format(
-//                                   context.read<AppCubit>().state.currentDate),
-//                               onChanged: (value) {
-//                                 context.read<AppCubit>().updateState(
-//                                       context.read<AppCubit>().state.copyWith(
-//                                             currentDate: DateTime(
-//                                               dateFormat
-//                                                   .parse(value.toString())
-//                                                   .year,
-//                                               dateFormat
-//                                                   .parse(value.toString())
-//                                                   .month,
-//                                               dateFormat
-//                                                   .parse(value.toString())
-//                                                   .day,
-//                                             ),
-//                                           ),
-//                                     );
-//                                 statesDateDoc = snapshot.data!.docs.firstWhere(
-//                                     (element) =>
-//                                         dateFormat
-//                                             .format(element['date'].toDate()) ==
-//                                         dateFormat.format(context
-//                                             .read<AppCubit>()
-//                                             .state
-//                                             .currentDate));
-//                                 context.read<AppCubit>().updateState(
-//                                     context.read<AppCubit>().state.copyWith(
-//                                           currentFirebaseDocId:
-//                                               statesDateDoc.id,
-//                                         ));
-//                                 mappedData2 = statesDateDoc[
-//                                     'studentAttendanceCheckboxes'];
-//                                 setState(() {
-//                                   mappedData2 = statesDateDoc[
-//                                           'studentAttendanceCheckboxes']
-//                                       .map((key, value) {
-//                                     debugPrint('key: $key value: $value');
-//                                     return MapEntry(key, value);
-//                                   });
-//                                 });
-//                               },
-//                             ),
-//                             Text(
-//                                 '${snapshot.data!.docs.firstWhere((element) => dateFormat.format(element['date'].toDate()) == date).data()['schoolName']} - Route ${snapshot.data!.docs.firstWhere((element) => dateFormat.format(element['date'].toDate()) == date).data()['busRouteNumber'].toString()}'),
-//                           ],
-//                         ),
-//                         StudentListWidget(
-//                           mappedData2: mappedData2,
-//                           docId: context
-//                               .read<AppCubit>()
-//                               .state
-//                               .currentFirebaseDocId,
-//                         ),
-//                       ],
-//                     );
-//                   },
-//                 );
-
-//                 //add a bloody submit button, that sends the new map to the database, updates the existing one for the date
-//               } catch (e) {
-//                 //here we will create a new document, with todays date, and the bus route number and school name
-//                 var studentsMapFromBusRoute = context
-//                     .read<AppCubit>()
-//                     .state
-//                     .currentBusRoute
-//                     .studentsIDs
-//                     .map((e) => MapEntry<String, bool>(e, false));
-//                 context.read<AppCubit>().updateState(
-//                       context.read<AppCubit>().state.copyWith(
-//                             currentAttendanceRecord: AttendanceRecordModel(
-//                               schoolName: context
-//                                   .read<AppCubit>()
-//                                   .state
-//                                   .currentSchool
-//                                   .name,
-//                               busRouteNumber: context
-//                                   .read<AppCubit>()
-//                                   .state
-//                                   .currentBusRoute
-//                                   .busRouteNumber,
-//                               studentAttendanceCheckboxes:
-//                                   Map.fromEntries(studentsMapFromBusRoute),
-//                               date: context.read<AppCubit>().state.currentDate,
-//                             ),
-//                           ),
-//                     );
-//                 context
-//                     .read<AppCubit>()
-//                     .state
-//                     .currentAttendanceRecord
-//                     .addAttendanceRecordToFirestore();
-
-//                 var statesDateDoc = snapshot.data!.docs.firstWhere((element) =>
-//                     dateFormat.format(element['date'].toDate()) == date);
-
-//                 context
-//                     .read<AppCubit>()
-//                     .updateState(context.read<AppCubit>().state.copyWith(
-//                           currentFirebaseDocId: statesDateDoc.id,
-//                         ));
-
-//                 var mappedData2 = statesDateDoc['studentAttendanceCheckboxes']
-//                     .map((key, value) {
-//                   debugPrint('key: $key value: $value');
-//                   return MapEntry(key, value);
-//                 });
-
-//                 //here do what we were doing before    return Column(
-//                 return BlocBuilder<AppCubit, AppState>(
-//                   builder: (context, state) {
-//                     return Column(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       crossAxisAlignment: CrossAxisAlignment.center,
-//                       children: [
-//                         Row(
-//                           mainAxisAlignment: MainAxisAlignment.center,
-//                           children: [
-//                             DropdownButton<String>(
-//                               items: snapshot.data!.docs.map((e) {
-//                                 return DropdownMenuItem(
-//                                   child: Text(
-//                                       dateFormat.format(e['date'].toDate())),
-//                                   value: dateFormat.format(e['date'].toDate()),
-//                                 );
-//                               }).toList(),
-//                               value: dateFormat.format(
-//                                   context.read<AppCubit>().state.currentDate),
-//                               onChanged: (value) {
-//                                 context.read<AppCubit>().updateState(
-//                                       context.read<AppCubit>().state.copyWith(
-//                                             currentDate: DateTime(
-//                                               dateFormat
-//                                                   .parse(value.toString())
-//                                                   .year,
-//                                               dateFormat
-//                                                   .parse(value.toString())
-//                                                   .month,
-//                                               dateFormat
-//                                                   .parse(value.toString())
-//                                                   .day,
-//                                             ),
-//                                           ),
-//                                     );
-//                                 statesDateDoc = snapshot.data!.docs.firstWhere(
-//                                     (element) =>
-//                                         dateFormat
-//                                             .format(element['date'].toDate()) ==
-//                                         dateFormat.format(context
-//                                             .read<AppCubit>()
-//                                             .state
-//                                             .currentDate));
-//                                 context.read<AppCubit>().updateState(
-//                                     context.read<AppCubit>().state.copyWith(
-//                                           currentFirebaseDocId:
-//                                               statesDateDoc.id,
-//                                         ));
-//                                 mappedData2 = statesDateDoc[
-//                                     'studentAttendanceCheckboxes'];
-//                                 setState(() {
-//                                   mappedData2 = statesDateDoc[
-//                                           'studentAttendanceCheckboxes']
-//                                       .map((key, value) {
-//                                     debugPrint('key: $key value: $value');
-//                                     return MapEntry(key, value);
-//                                   });
-//                                 });
-//                               },
-//                             ),
-//                             Text(
-//                                 '${snapshot.data!.docs.firstWhere((element) => dateFormat.format(element['date'].toDate()) == date).data()['schoolName']} - Route ${snapshot.data!.docs.firstWhere((element) => dateFormat.format(element['date'].toDate()) == date).data()['busRouteNumber'].toString()}'),
-//                           ],
-//                         ),
-//                         StudentListWidget(
-//                           mappedData2: mappedData2,
-//                           docId: context
-//                               .read<AppCubit>()
-//                               .state
-//                               .currentFirebaseDocId,
-//                         ),
-//                       ],
-//                     );
-//                   },
-//                 );
-
-//                 //and then we will create a map of all the students in the bus route, and set their attendance to false
-//                 //and then we will add this map to the document
-//                 //and then we will do what we were doing before
-//                 //add a bloody submit button, that sends the new map to the database, updates the existing one for the date
-
-//                 print(e);
-//                 return Text(e.toString());
-//               }
-//             } else {
-//               return Center(
-//                 child: CircularProgressIndicator(),
-//               );
-//             }
-//           },
-//           // Remove the extra closing parenthesis
-//           // );
-//         ),
-//       ),
-//     );
-//   }
-// }
