@@ -691,16 +691,31 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                           .currentSchoolFirebaseDocId;
                                       print(
                                           "usecase 8  testing $testDocID1  $testDocId2");
+                                      var newCurrentSchoolRoutesNames = context
+                                          .read<AppCubit>()
+                                          .state
+                                          .currentSchool
+                                          .routesNames;
+
+                                      updateFirebaseDoc(
+                                          "schools",
+                                          newCurrentSchoolDocId,
+                                          "routesNames",
+                                          newCurrentSchoolRoutesNames);
+
+                                      var currentBusDocId = context
+                                          .read<AppCubit>()
+                                          .state
+                                          .currentBusRouteFirebaseDocId;
+                                      updateFirebaseDoc(
+                                          "busRoutes",
+                                          currentBusDocId,
+                                          "schoolName",
+                                          currentSchoolName);
                                     });
 
                                     // 9. update this new school on Firebase
-                                    var schoolBeforeUpdateFromFirebase =
-                                        await fetchSchoolFromFirebaseByName(
-                                                schoolNameController.text)
-                                            as SchoolModel;
-                                    var oldRoutesNamesFromFirebase =
-                                        schoolBeforeUpdateFromFirebase
-                                            .routesNames;
+
                                     var newCurrentSchoolRoutesNames = context
                                         .read<AppCubit>()
                                         .state
@@ -712,16 +727,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                         newCurrentSchoolDocId,
                                         "routesNames",
                                         newCurrentSchoolRoutesNames);
-
-                                    //testing
-                                    var testSchool4 =
-                                        await fetchSchoolFromFirebaseByName(
-                                                schoolNameController.text)
-                                            as SchoolModel;
-                                    var newRoutesNamesFromFirebase =
-                                        testSchool4.routesNames;
-                                    print(
-                                        "usecase 9: testing $oldRoutesNamesFromFirebase  $newRoutesNamesFromFirebase");
 
                                     Navigator.of(context).pop();
                                   } catch (error) {
