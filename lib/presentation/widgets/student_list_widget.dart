@@ -23,9 +23,10 @@ class StudentListWidget extends StatelessWidget {
             columns: const [
               DataColumn(label: Text("ID")),
               DataColumn(label: Text("Name")),
+              DataColumn(label: Text("Phone")),
+              DataColumn(label: Text("Fathers Phone")),
               DataColumn(label: Text("Grade")),
               DataColumn(label: Text("Group")),
-              DataColumn(label: Text("Phone")),
               DataColumn(label: Text("Address")),
             ],
             rows: List<DataRow>.generate(
@@ -40,13 +41,16 @@ class StudentListWidget extends StatelessWidget {
                       Text(students[index].name),
                     ),
                     DataCell(
+                      Text(students[index].primaryPhoneNumber.toString()),
+                    ),
+                    DataCell(
+                      Text(students[index].fatherPhoneNumber.toString()),
+                    ),
+                    DataCell(
                       Text(students[index].grade.toString()),
                     ),
                     DataCell(
                       Text(students[index].group.toString()),
-                    ),
-                    DataCell(
-                      Text(students[index].primaryPhoneNumber.toString()),
                     ),
                     DataCell(
                       Text(students[index].addressDescription),

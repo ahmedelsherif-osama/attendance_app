@@ -1,25 +1,87 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
+import 'package:final_rta_attendance/models/3_student_model.dart';
 import 'package:final_rta_attendance/models/4_attendace_record_model.dart';
+import 'package:final_rta_attendance/presentation/widgets/student_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AttendanceRecordScreen extends StatelessWidget {
-  Future<dynamic> fetchAttendanceRecords(schoolName, busRouteNumber) async {
-    const List<AttendanceRecordModel> attendanceRecords = [];
-    const List<String> attendanceRecordsDocIds = [];
-    var docs = await FirebaseFirestore.instance
-        .collection("attendanceRecords")
-        .where(schoolName, isEqualTo: schoolName)
-        .where(busRouteNumber, isEqualTo: busRouteNumber)
-        .get()
-        .then((value) => value.docs);
-    docs.forEach((element) {
-      attendanceRecords.add(AttendanceRecordModel.fromJson(element.data()));
-      attendanceRecordsDocIds.add(element.id);
-    });
+class AttendanceRecordScreen extends StatefulWidget {
+  @override
+  State<AttendanceRecordScreen> createState() => _AttendanceRecordScreenState();
+}
+
+class _AttendanceRecordScreenState extends State<AttendanceRecordScreen> {
+  DateTime? _date;
+  List<StudentModel> _students = [];
+  List<bool> _attendanceCheckboxes = [];
+
+  Future<List<StudentModel>> fetchStudents(
+      String schoolName, int busRouteNumber) async {
+    List<StudentModel> students = [];
+
+    try {
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection("students")
+          .where("schoolName", isEqualTo: schoolName)
+          .where("busRouteNumber", isEqualTo: busRouteNumber.toString())
+          .get();
+
+      students = querySnapshot.docs
+          .map((doc) => StudentModel.fromJson(doc.data()))
+          .toList();
+    } catch (e) {
+      print("Error fetching students: $e");
+    }
+    print(students.first.name);
+    return students;
+  }
+
+  Future<List> fetchAttendanceRecordsAndStudents(
+      String schoolName, int busRouteNumber) async {
+    List<AttendanceRecordModel> attendanceRecords = [];
+    List<String> attendanceRecordsDocIds = [];
+
+    try {
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection("attendanceRecords")
+          .where("schoolName", isEqualTo: schoolName)
+          .where("busRouteNumber", isEqualTo: busRouteNumber.toString())
+          .get();
+
+      attendanceRecords = querySnapshot.docs
+          .map(
+            (doc) => AttendanceRecordModel(
+                date: doc.data()['date'].toDate() as DateTime,
+                busRouteNumber: doc.data()['busRouteNumber'],
+                schoolName: doc.data()['schoolName'],
+                studentAttendanceCheckboxes: Map<String, bool>.from(
+                    doc.data()['studentAttendanceCheckboxes'])),
+          )
+          .toList();
+      attendanceRecordsDocIds =
+          querySnapshot.docs.map((doc) => doc.id).toList();
+    } catch (e) {
+      print("Error fetching attendanceRecords: $e");
+    }
+    List<StudentModel> students = [];
+
+    try {
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection("students")
+          .where("schoolName", isEqualTo: schoolName)
+          .where("busRouteNumber", isEqualTo: busRouteNumber.toString())
+          .get();
+
+      students = querySnapshot.docs
+          .map((doc) => StudentModel.fromJson(doc.data()))
+          .toList();
+    } catch (e) {
+      print("Error fetching students: $e");
+    }
+    print(students.first.name);
     print(attendanceRecords.first.date);
-    return [attendanceRecords, attendanceRecordsDocIds];
+    return [attendanceRecords, students, attendanceRecordsDocIds];
   }
 
   @override
@@ -71,9 +133,19 @@ class AttendanceRecordScreen extends StatelessWidget {
     // 6. upon pressing submit, if the record exists already, update the doc on db with new values
 
     return FutureBuilder(
-      future: fetchAttendanceRecords(schoolName, busRouteNumber),
+      future: fetchAttendanceRecordsAndStudents(schoolName, busRouteNumber),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          final attendanceRecords =
+              snapshot.data![0].cast<AttendanceRecordModel>();
+          var students = snapshot.data![1].cast<StudentModel>();
+
+          final dates = snapshot.data![0].map((e) => e.date).toList();
+          final datesDropdownMenuEntries = List.generate(
+              dates.length,
+              (index) => DropdownMenuEntry(
+                  value: attendanceRecords[index],
+                  label: dates[index].toString()));
           return Scaffold(
             body: Center(
               child: Column(
@@ -81,17 +153,71 @@ class AttendanceRecordScreen extends StatelessWidget {
                   SizedBox(
                     height: height * 0.1,
                   ),
-                  const Text("student1"),
-                  const Text("student2"),
-                  const Text("student3"),
-                  const Text("student4"),
-                  const Text("student5"),
+                  DropdownMenu(
+                    dropdownMenuEntries: datesDropdownMenuEntries,
+                    onSelected: (value) {
+                      setState(() {
+                        _date = value.date;
+                        _attendanceCheckboxes =
+                            value.studentAttendanceCheckboxes.values.toList();
+                        _students = students;
+                        // _students.removeWhere((element) => !value
+                        //     .studentAttendanceCheckboxes.keys
+                        //     .contains(element.studentID));
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: height * 0.1,
+                  ),
+                  StudentListWidget(
+                      students: _students,
+                      attendanceCheckBoxes: _attendanceCheckboxes)
                 ],
               ),
             ),
           );
         } else {
-          return Scaffold();
+          return FutureBuilder(
+            future: fetchStudents(schoolName, busRouteNumber),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final students = snapshot.data;
+                print("fetched students");
+
+                return Scaffold(
+                  body: Center(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: height * 0.7,
+                        ),
+                        SizedBox(
+                          height: height * 0.7,
+                        ),
+                        StudentListWidget(
+                            students: students!,
+                            attendanceCheckBoxes: List.generate(
+                                students.length, (index) => false))
+                      ],
+                    ),
+                  ),
+                );
+              } else {
+                print("${schoolName} ${busRouteNumber}");
+                return Center(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: height * 0.3,
+                      ),
+                      Text("no students habibi"),
+                    ],
+                  ),
+                );
+              }
+            },
+          );
         }
       },
     );

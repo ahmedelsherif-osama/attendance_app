@@ -1,13 +1,17 @@
+import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/4_attendace_record_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AttendanceRecordsWidget extends StatefulWidget {
   const AttendanceRecordsWidget({
     required this.attendanceRecords,
+    required this.attendanceRecordsDocIds,
     Key? key,
   }) : super(key: key);
 
   final List<AttendanceRecordModel> attendanceRecords;
+  final List<String> attendanceRecordsDocIds;
 
   @override
   State<AttendanceRecordsWidget> createState() =>
@@ -17,6 +21,7 @@ class AttendanceRecordsWidget extends StatefulWidget {
 class _AttendanceRecordsWidgetState extends State<AttendanceRecordsWidget> {
   late DateTime _currentDate;
   late List<AttendanceRecordModel> _currentAttendanceRecords;
+  late List<String> _attendanceRecordsDocIds;
 
   findMinDate(dates) {
     var minDate;
@@ -38,6 +43,7 @@ class _AttendanceRecordsWidgetState extends State<AttendanceRecordsWidget> {
     // Initialize the state with the provided date and attendanceRecords
     _currentAttendanceRecords = widget.attendanceRecords;
     _currentDate = DateTime.now();
+    _attendanceRecordsDocIds = widget.attendanceRecordsDocIds;
   }
 
   @override
@@ -71,7 +77,10 @@ class _AttendanceRecordsWidgetState extends State<AttendanceRecordsWidget> {
                   setState(() {
                     _currentDate = date;
                   });
-                })
+                }),
+            SizedBox(
+              height: height * 0.2,
+            ),
           ],
         ),
       ),

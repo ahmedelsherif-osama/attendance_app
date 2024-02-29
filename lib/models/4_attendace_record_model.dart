@@ -9,7 +9,7 @@ class AttendanceRecordModel extends Equatable {
     required this.date,
   });
   final String schoolName;
-  final int busRouteNumber;
+  final String busRouteNumber;
   final Map<String, bool> studentAttendanceCheckboxes;
   final DateTime date;
   @override
@@ -19,7 +19,7 @@ class AttendanceRecordModel extends Equatable {
   factory AttendanceRecordModel.fromJson(Map<String, dynamic> json) {
     return AttendanceRecordModel(
       schoolName: json['schoolName'] as String,
-      busRouteNumber: json['busRouteNumber'] as int,
+      busRouteNumber: json['busRouteNumber'] as String,
       studentAttendanceCheckboxes:
           json['studentAttendanceCheckboxes'] ?? [] as Map<String, bool>,
       date: json['date'] as DateTime,
@@ -29,7 +29,7 @@ class AttendanceRecordModel extends Equatable {
   factory AttendanceRecordModel.empty() {
     return AttendanceRecordModel(
       schoolName: '',
-      busRouteNumber: 0,
+      busRouteNumber: '',
       studentAttendanceCheckboxes: {},
       date: DateTime.now(),
     );
