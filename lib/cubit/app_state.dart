@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
 import 'package:final_rta_attendance/models/1_school_model.dart';
 import 'package:final_rta_attendance/models/3_student_model.dart';
-import 'package:final_rta_attendance/models/4_attendace_record_model.dart';
+import 'package:final_rta_attendance/models/4_attendance_record_model.dart';
 
 class AppState extends Equatable {
   const AppState({

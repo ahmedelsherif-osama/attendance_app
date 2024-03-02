@@ -3,7 +3,6 @@ import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/3_student_model.dart';
 import 'package:final_rta_attendance/models/4_attendance_record_model.dart';
 import 'package:final_rta_attendance/presentation/widgets/student_list_widget%20copy.dart';
-import 'package:final_rta_attendance/presentation/widgets/student_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -135,7 +134,7 @@ class TestWidget extends StatelessWidget {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: height * 0.2,
+                          height: height * 0.1,
                         ),
                         DropdownMenu(
                           dropdownMenuEntries: datesDropDownEntries,
@@ -174,11 +173,19 @@ class TestWidget extends StatelessWidget {
                           },
                         ),
                         SizedBox(
-                          height: height * 0.2,
+                          height: height * 0.1,
                         ),
                         StudentListWithCheckBoxesWidget(
                             students: students,
-                            attendanceCheckBoxes: studentsCheckBoxes)
+                            attendanceCheckBoxes: studentsCheckBoxes),
+                        SizedBox(
+                          height: height * 0.1,
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("Save"))
                       ],
                     ),
                   ),
