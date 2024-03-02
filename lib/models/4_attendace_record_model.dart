@@ -44,6 +44,21 @@ class AttendanceRecordModel extends Equatable {
     };
   }
 
+  AttendanceRecordModel copyWith({
+    String? schoolName,
+    String? busRouteNumber,
+    Map<String, dynamic>? studentAttendanceCheckboxes,
+    DateTime? date,
+  }) {
+    return AttendanceRecordModel(
+      schoolName: schoolName ?? this.schoolName,
+      busRouteNumber: busRouteNumber ?? this.busRouteNumber,
+      studentAttendanceCheckboxes:
+          studentAttendanceCheckboxes ?? this.studentAttendanceCheckboxes,
+      date: date ?? this.date,
+    );
+  }
+
   void addAttendanceRecordToFirestore() async {
     // Create a new instance of SchoolModel
     AttendanceRecordModel newAttendanceRecord = AttendanceRecordModel(

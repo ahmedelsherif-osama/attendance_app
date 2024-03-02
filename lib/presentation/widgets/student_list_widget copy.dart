@@ -4,11 +4,36 @@ import 'package:final_rta_attendance/presentation/screens_widgets/5_student_deta
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class StudentListWithCheckBoxesWidget extends StatelessWidget {
-  const StudentListWithCheckBoxesWidget(
-      {required this.students, required this.attendanceCheckBoxes, super.key});
+class StudentListWithCheckBoxesWidget extends StatefulWidget {
+  const StudentListWithCheckBoxesWidget({
+    required this.students,
+    required this.attendanceCheckBoxes,
+    super.key,
+  });
+
   final List<StudentModel> students;
   final Map<String, dynamic> attendanceCheckBoxes;
+
+  @override
+  State<StudentListWithCheckBoxesWidget> createState() =>
+      _StudentListWithCheckBoxesWidgetState();
+}
+
+class _StudentListWithCheckBoxesWidgetState
+    extends State<StudentListWithCheckBoxesWidget> {
+  @override
+  var _attendanceCheckBoxes;
+  var _students;
+  void initState() {
+    super.initState();
+    setState(
+      () {
+        _students = widget.students;
+        _attendanceCheckBoxes = widget.attendanceCheckBoxes;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -19,51 +44,65 @@ class StudentListWithCheckBoxesWidget extends StatelessWidget {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
                 children: [
-                  const Text("ID"),
-                  SizedBox(
-                    width: width * 0.01,
+                  Container(
+                    width: width * 0.1,
+                    child: const Text("ID"),
                   ),
-                  const Text("Name"),
-                  SizedBox(
-                    width: width * 0.01,
+                  Container(
+                    width: width * 0.2,
+                    child: const Text("Name"),
                   ),
-                  const Text("Phone"),
-                  SizedBox(
-                    width: width * 0.01,
+                  Container(
+                    width: width * 0.2,
+                    child: const Text("Phone"),
                   ),
-                  const Text("Father's Phone"),
-                  SizedBox(
-                    width: width * 0.01,
+                  Container(
+                    width: width * 0.2,
+                    child: const Text("Father's Phone"),
                   ),
-                  const Text("Attendance"),
+                  Container(
+                    width: width * 0.2,
+                    child: const Text("Attendance"),
+                  ),
                 ],
               ),
-              for (int index = 0; index < students.length; index++)
+              for (int index = 0; index < widget.students.length; index++)
                 Row(
                   children: [
-                    Text(students[index].studentID),
-                    SizedBox(
-                      width: width * 0.01,
+                    Container(
+                      width: width * 0.1,
+                      child: Text(widget.students[index].studentID),
                     ),
-                    Text(students[index].name),
-                    SizedBox(
-                      width: width * 0.01,
+                    Container(
+                      width: width * 0.2,
+                      child: Text(widget.students[index].name),
                     ),
-                    Text(students[index].primaryPhoneNumber.toString()),
-                    SizedBox(
-                      width: width * 0.01,
+                    Container(
+                      width: width * 0.2,
+                      child: Text(
+                          widget.students[index].primaryPhoneNumber.toString()),
                     ),
-                    Text(students[index].fatherPhoneNumber.toString()),
-                    SizedBox(
-                      width: width * 0.01,
+                    Container(
+                      width: width * 0.2,
+                      child: Text(
+                          widget.students[index].fatherPhoneNumber.toString()),
                     ),
-                    Checkbox(
-                      value: attendanceCheckBoxes[
-                          students[index].studentID.toString()],
-                      onChanged: (value) {},
+                    Container(
+                      width: width * 0.2,
+                      child: Checkbox(
+                        value: _attendanceCheckBoxes[
+                            _students[index].studentID.toString()],
+                        onChanged: (value) {
+                          setState(() {
+                            _attendanceCheckBoxes[
+                                _students[index].studentID.toString()] = value;
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
