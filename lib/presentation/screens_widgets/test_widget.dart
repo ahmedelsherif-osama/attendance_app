@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/3_student_model.dart';
 import 'package:final_rta_attendance/models/4_attendace_record_model.dart';
+import 'package:final_rta_attendance/presentation/widgets/student_list_widget%20copy.dart';
 import 'package:final_rta_attendance/presentation/widgets/student_list_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TestWidget extends StatelessWidget {
+  // this is the new attendance record screen
   TestWidget({super.key});
 
   final todaysDate = DateTime.now();
@@ -163,11 +165,9 @@ class TestWidget extends StatelessWidget {
                         SizedBox(
                           height: height * 0.2,
                         ),
-                        StudentListWidget(
-                          students: students,
-                          attendanceCheckBoxes:
-                              List.generate(students.length, (index) => false),
-                        ),
+                        StudentListWithCheckBoxesWidget(
+                            students: students,
+                            attendanceCheckBoxes: studentsCheckBoxes)
                       ],
                     ),
                   ),

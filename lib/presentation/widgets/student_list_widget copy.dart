@@ -8,7 +8,7 @@ class StudentListWithCheckBoxesWidget extends StatelessWidget {
   const StudentListWithCheckBoxesWidget(
       {required this.students, required this.attendanceCheckBoxes, super.key});
   final List<StudentModel> students;
-  final List<bool> attendanceCheckBoxes;
+  final Map<String, dynamic> attendanceCheckBoxes;
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -18,53 +18,56 @@ class StudentListWithCheckBoxesWidget extends StatelessWidget {
         scrollDirection: Axis.vertical,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: DataTable(
-            columnSpacing: width * 0.1,
-            columns: const [
-              DataColumn(label: Text("ID")),
-              DataColumn(label: Text("Name")),
-              DataColumn(label: Text("Phone")),
-              DataColumn(label: Text("Fathers Phone")),
-              DataColumn(label: Text("Grade")),
-              DataColumn(label: Text("Group")),
-              DataColumn(label: Text("Address")),
-            ],
-            rows: List<DataRow>.generate(
-              students.length,
-              (index) {
-                return DataRow(
-                  cells: [
-                    DataCell(
-                      Text(students[index].studentID.toString()),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  const Text("ID"),
+                  SizedBox(
+                    width: width * 0.01,
+                  ),
+                  const Text("Name"),
+                  SizedBox(
+                    width: width * 0.01,
+                  ),
+                  const Text("Phone"),
+                  SizedBox(
+                    width: width * 0.01,
+                  ),
+                  const Text("Father's Phone"),
+                  SizedBox(
+                    width: width * 0.01,
+                  ),
+                  const Text("Attendance"),
+                ],
+              ),
+              for (int index = 0; index < students.length; index++)
+                Row(
+                  children: [
+                    Text(students[index].studentID),
+                    SizedBox(
+                      width: width * 0.01,
                     ),
-                    DataCell(
-                      Text(students[index].name),
+                    Text(students[index].name),
+                    SizedBox(
+                      width: width * 0.01,
                     ),
-                    DataCell(
-                      Text(students[index].primaryPhoneNumber.toString()),
+                    Text(students[index].primaryPhoneNumber.toString()),
+                    SizedBox(
+                      width: width * 0.01,
                     ),
-                    DataCell(
-                      Text(students[index].fatherPhoneNumber.toString()),
+                    Text(students[index].fatherPhoneNumber.toString()),
+                    SizedBox(
+                      width: width * 0.01,
                     ),
-                    DataCell(
-                      Text(students[index].grade.toString()),
-                    ),
-                    DataCell(
-                      Text(students[index].group.toString()),
-                    ),
-                    DataCell(
-                      Text(students[index].addressDescription),
+                    Checkbox(
+                      value: attendanceCheckBoxes[
+                          students[index].studentID.toString()],
+                      onChanged: (value) {},
                     ),
                   ],
-                  onSelectChanged: (bool? selected) {
-                    if (selected != null && selected) {
-                      print(
-                          "Clicked on student with ID: ${students[index].studentID}");
-                    }
-                  },
-                );
-              },
-            ),
+                ),
+            ],
           ),
         ),
       ),
