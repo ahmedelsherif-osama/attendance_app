@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/3_student_model.dart';
-import 'package:final_rta_attendance/models/4_attendace_record_model.dart';
+import 'package:final_rta_attendance/models/4_attendance_record_model.dart';
 import 'package:final_rta_attendance/presentation/widgets/student_list_widget%20copy.dart';
 import 'package:final_rta_attendance/presentation/widgets/student_list_widget.dart';
 import 'package:flutter/material.dart';
@@ -147,12 +147,23 @@ class TestWidget extends StatelessWidget {
                               date: value,
                             ).addAttendanceRecordToFirestore();
 
+                            final currentAttendanceRecord =
+                                AttendanceRecordModel(
+                              schoolName: schoolName,
+                              busRouteNumber: busRouteNumber.toString(),
+                              studentAttendanceCheckboxes: studentsCheckBoxes,
+                              date: value,
+                            );
+
                             fetchAttendanceRecordIdWithSchoolNameBusRouteNumber(
                                     schoolName, busRouteNumber)
                                 .then((value) {
                               final oldState = context.read<AppCubit>().state;
                               final newState = oldState.copyWith(
-                                  currentAttendanceRecordFirebaseDocId: value);
+                                currentAttendanceRecordFirebaseDocId: value,
+                                currentAttendanceRecord:
+                                    currentAttendanceRecord,
+                              );
                               context.read<AppCubit>().updateState(newState);
                               final currentAttendanceRecordDocId = context
                                   .read<AppCubit>()

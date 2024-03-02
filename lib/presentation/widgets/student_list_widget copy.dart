@@ -101,6 +101,32 @@ class _StudentListWithCheckBoxesWidgetState
                             _attendanceCheckBoxes[
                                 _students[index].studentID.toString()] = value;
                           });
+                          final schoolName =
+                              context.read<AppCubit>().state.currentSchool.name;
+                          final busRouteNumber = context
+                              .read<AppCubit>()
+                              .state
+                              .currentBusRoute
+                              .busRouteNumber
+                              .toString();
+                          final attendanceRecordDocId = context
+                              .read<AppCubit>()
+                              .state
+                              .currentAttendanceRecordFirebaseDocId;
+
+                          final attendanceRecord = context
+                              .read<AppCubit>()
+                              .state
+                              .currentAttendanceRecord;
+                          final newAttendanceRecord = attendanceRecord.copyWith(
+                              studentAttendanceCheckboxes:
+                                  _attendanceCheckBoxes);
+                          final oldState = context.read<AppCubit>().state;
+                          final newState = oldState.copyWith(
+                              currentAttendanceRecord: newAttendanceRecord);
+                          context.read<AppCubit>().updateState(newState);
+                          newAttendanceRecord.updateAttendanceRecordOnFirestore(
+                              attendanceRecordDocId);
                         },
                       ),
                     ),
