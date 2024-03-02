@@ -10,7 +10,7 @@ class AttendanceRecordModel extends Equatable {
   });
   final String schoolName;
   final String busRouteNumber;
-  final Map<String, bool> studentAttendanceCheckboxes;
+  final Map<String, dynamic> studentAttendanceCheckboxes;
   final DateTime date;
   @override
   List<Object?> get props =>
@@ -21,7 +21,7 @@ class AttendanceRecordModel extends Equatable {
       schoolName: json['schoolName'] as String,
       busRouteNumber: json['busRouteNumber'] as String,
       studentAttendanceCheckboxes:
-          json['studentAttendanceCheckboxes'] ?? [] as Map<String, bool>,
+          json['studentAttendanceCheckboxes'] ?? [] as Map<String, dynamic>,
       date: json['date'] as DateTime,
     );
   }

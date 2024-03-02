@@ -1,11 +1,11 @@
 import 'package:final_rta_attendance/presentation/screens_widgets/3_bus_route_screen.dart';
-import 'package:final_rta_attendance/presentation/screens_widgets/4_attendance_record_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/1_school_list.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/2_school_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/5_student_details_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/6_add_school_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/7_add_bus_route_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/8_add_student_screen.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/test_widget.dart';
 import 'package:go_router/go_router.dart';
 
 GoRouter router = GoRouter(
@@ -20,7 +20,7 @@ GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/attendance_record',
-      builder: (context, state) => AttendanceRecordScreen(),
+      builder: (context, state) => TestWidget(),
     ),
     GoRoute(
       path: '/bus_route_screen',

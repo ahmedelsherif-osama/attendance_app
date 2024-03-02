@@ -6,11 +6,11 @@ import 'package:final_rta_attendance/models/3_student_model.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/1_school_list.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/2_school_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/3_bus_route_screen.dart';
-import 'package:final_rta_attendance/presentation/screens_widgets/4_attendance_record_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/5_student_details_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/6_add_school_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/7_add_bus_route_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/8_add_student_screen.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/test_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,10 +44,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await fetchStudents("sharath school", 1)
-      .then((value) => value.forEach((element) {
-            print(element.name);
-          }));
   runApp(
     BlocProvider(
       create: (_) => AppCubit(
@@ -69,7 +65,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => SchoolListScreen(),
         '/school_screen': (context) => SchoolScreen(),
         '/bus_route_screen': (context) => BusRouteScreen(),
-        '/attendance_record_screen': (context) => AttendanceRecordScreen(),
+        '/attendance_record_screen': (context) => TestWidget(),
         '/student_details_screen': (context) => StudentDetailsScreen(),
         '/add_school_screen': (context) => AddSchoolScreen(),
         '/add_bus_route_screen': (context) => AddBusRouteScreen(),
