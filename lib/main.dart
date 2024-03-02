@@ -10,7 +10,7 @@ import 'package:final_rta_attendance/presentation/screens_widgets/5_student_deta
 import 'package:final_rta_attendance/presentation/screens_widgets/6_add_school_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/7_add_bus_route_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/8_add_student_screen.dart';
-import 'package:final_rta_attendance/presentation/screens_widgets/test_widget.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/new_widget.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => SchoolListScreen(),
         '/school_screen': (context) => SchoolScreen(),
         '/bus_route_screen': (context) => BusRouteScreen(),
-        '/attendance_record_screen': (context) => TestWidget(),
+        '/attendance_record_screen': (context) => NewWidget(),
         '/student_details_screen': (context) => StudentDetailsScreen(),
         '/add_school_screen': (context) => AddSchoolScreen(),
         '/add_bus_route_screen': (context) => AddBusRouteScreen(),

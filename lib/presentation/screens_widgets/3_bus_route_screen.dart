@@ -6,7 +6,7 @@ import 'package:final_rta_attendance/models/3_student_model.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/1_school_list.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/5_student_details_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/8_add_student_screen.dart';
-import 'package:final_rta_attendance/presentation/screens_widgets/test_widget.dart';
+import 'package:final_rta_attendance/presentation/screens_widgets/new_widget.dart';
 import 'package:final_rta_attendance/presentation/widgets/change_details_popup.dart';
 import 'package:final_rta_attendance/presentation/widgets/custom_button.dart';
 
@@ -184,7 +184,7 @@ class BusRouteScreen extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
-                                    builder: (context) => TestWidget(),
+                                    builder: (context) => NewWidget(),
                                   ),
                                 );
                               },
