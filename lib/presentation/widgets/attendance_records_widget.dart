@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/4_attendance_record_model.dart';
+import 'package:final_rta_attendance/presentation/widgets/student_list_widget%20copy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -60,6 +61,7 @@ class AttendanceRecordsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     final schoolName = context.read<AppCubit>().state.currentSchool.name;
     final busRouteNumber =
         context.read<AppCubit>().state.currentBusRoute.busRouteNumber;
@@ -75,6 +77,7 @@ class AttendanceRecordsWidget extends StatelessWidget {
       orElse: () => AttendanceRecordModel.empty(),
     );
     if (todaysAttendanceRecord.busRouteNumber == "") {
+      return Text("still making it");
       // no
       // create a new record for today itself
       // display that record
@@ -82,8 +85,57 @@ class AttendanceRecordsWidget extends StatelessWidget {
       //or oldest record of older than 30 days
     } else {
       //yes
-      //display one for today first, make the rest reachable from dropdown of last 30 days
+      //make the rest reachable from dropdown of last 30 days
       //or oldest record of older than 30 days
+
+      // 1. check if oldest record is older than or equal 30 days old
+      var minDate = todaysDate.subtract(Duration(days: 30));
+      for (int index = 0; index < attendanceRecords.length; index++) {
+        if (attendanceRecords[index].date.isBefore(minDate)) {
+          minDate = attendanceRecords[index].date;
+        }
+      }
+
+      // a. yes
+      // create the dates dropdown menu, all dates starting oldest date
+      // b. no
+      // create the date dropdown meny, all dates starting 30 days old
+
+      final datesDropDownMenuEntries = List.generate(
+          31,
+          (index) => DropdownMenuEntry(
+              value: minDate.add(Duration(days: index)),
+              label: minDate
+                  .add(Duration(days: index))
+                  .toString()
+                  .substring(0, 10)));
+      return Scaffold(
+        body: Center(
+          child: Column(
+            children: [
+              SizedBox(
+                height: height * 0.1,
+              ),
+              DropdownMenu(dropdownMenuEntries: datesDropDownMenuEntries),
+              SizedBox(
+                height: height * 0.1,
+              ),
+              StudentListWithCheckBoxesWidget(
+                  students: students,
+                  attendanceCheckBoxes: attendanceCheckBoxes),
+              SizedBox(
+                height: height * 0.1,
+              ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Save")),
+            ],
+          ),
+        ),
+      );
+      //display one for today first,
     }
   }
 }
