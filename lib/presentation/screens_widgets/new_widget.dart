@@ -82,7 +82,9 @@ class NewWidget extends StatelessWidget {
         future: fetchAttendanceRecords(schoolName, busRouteNumber),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return AttendanceRecordsWidget();
+            return AttendanceRecordsWidget(
+                attendanceRecords: snapshot.data as List<AttendanceRecordModel>,
+                todaysDate: todaysDate);
           } else {
             // return Text("we dont have attendance records");
             //if no attendance records, create one for today
