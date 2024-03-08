@@ -82,6 +82,57 @@ class AttendanceRecordsWidget extends StatelessWidget {
           studentAttendanceCheckboxes: studentAttendanceCheckboxes,
           date: todaysDate);
 
+      // 1. check if oldest record is older than or equal 30 days old
+      var minDate = todaysDate.subtract(const Duration(days: 30));
+      for (int index = 0; index < attendanceRecords.length; index++) {
+        if (attendanceRecords[index].date.isBefore(minDate)) {
+          minDate = attendanceRecords[index].date;
+        }
+      }
+
+      // a. yes
+      // create the dates dropdown menu, all dates starting oldest date
+      // b. no
+      // create the date dropdown meny, all dates starting 30 days old
+
+      final datesDropDownMenuEntries = List.generate(
+          31,
+          (index) => DropdownMenuEntry(
+              value: minDate.add(Duration(days: index)),
+              label: minDate
+                  .add(Duration(days: index))
+                  .toString()
+                  .substring(0, 10)));
+
+      return Scaffold(
+        body: Center(
+          child: Column(
+            children: [
+              SizedBox(
+                height: height * 0.1,
+              ),
+              DropdownMenu(
+                dropdownMenuEntries: datesDropDownMenuEntries,
+                onSelected: (value) {},
+              ),
+              SizedBox(
+                height: height * 0.1,
+              ),
+              // StudentListWithCheckBoxesWidget(
+              //     students: students, attendanceCheckBoxes: studentsCheckBoxes),
+              SizedBox(
+                height: height * 0.1,
+              ),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("Save"))
+            ],
+          ),
+        ),
+      );
+
       // display that record
       return Text("still making it");
       // make the rest reachable from dropdown of last 30 days
