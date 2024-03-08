@@ -3,6 +3,7 @@ import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/main.dart';
 import 'package:final_rta_attendance/models/3_student_model.dart';
 import 'package:final_rta_attendance/models/4_attendance_record_model.dart';
+import 'package:final_rta_attendance/presentation/widgets/no_attendance_records_widget.dart';
 import 'package:final_rta_attendance/presentation/widgets/student_list_widget%20copy.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,9 +83,9 @@ class AttendanceRecordsWidget extends StatelessWidget {
           date: todaysDate);
 
       // display that record
+      return Text("still making it");
       // make the rest reachable from dropdown of last 30 days
       //or oldest record of older than 30 days
-      return const Text("still making it");
     } else {
       //yes
       //make the rest reachable from dropdown of last 30 days
