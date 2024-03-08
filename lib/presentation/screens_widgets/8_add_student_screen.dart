@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/1_school_model.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
@@ -322,11 +323,28 @@ class AddStudentScreen extends StatelessWidget {
                     );
                 final docID =
                     context.read<AppCubit>().state.currentBusRouteFirebaseDocId;
+                final tempCurrentBusRouteStudentIds =
+                    context.read<AppCubit>().state.currentBusRoute.studentsIDs;
+                final studentID =
+                    context.read<AppCubit>().state.currentStudent.studentID;
+                // tempCurrentBusRouteStudentIds.add(studentID);
+                final tempCurrentBusRoute =
+                    context.read<AppCubit>().state.currentBusRoute;
+                final correctBusRoute = tempCurrentBusRoute.copyWith(
+                    studentsIDs: tempCurrentBusRouteStudentIds);
+                final oldState = context.read<AppCubit>().state;
+                final newState =
+                    oldState.copyWith(currentBusRoute: correctBusRoute);
+                context.read<AppCubit>().updateState(newState);
                 context
                     .read<AppCubit>()
                     .state
                     .currentBusRoute
                     .updateBusRouteOnFirestore(docID);
+                // FirebaseFirestore.instance
+                //     .collection("busRoutes")
+                //     .doc(docID)
+                //     .update(correctBusRoute.toJson());
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
                     builder: (context) => BusRouteScreen(),

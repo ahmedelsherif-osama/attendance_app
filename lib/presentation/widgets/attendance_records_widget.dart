@@ -59,12 +59,32 @@ class AttendanceRecordsWidget extends StatelessWidget {
     );
 
     if (todaysAttendanceRecord.busRouteNumber == "") {
-      return const Text("still making it");
       // no
+      var currentBusRouteNumber = context
+          .read<AppCubit>()
+          .state
+          .currentBusRoute
+          .busRouteNumber
+          .toString();
+      var currentBusStudentIds =
+          context.read<AppCubit>().state.currentBusRoute.studentsIDs;
+      var studentAttendanceCheckboxes = new Map<String, dynamic>();
+      currentBusStudentIds.forEach((element) {
+        studentAttendanceCheckboxes[element] = false;
+      });
+      print(studentAttendanceCheckboxes.entries);
+
       // create a new record for today itself
+      var newAttendanceRecordToday = AttendanceRecordModel(
+          schoolName: schoolName,
+          busRouteNumber: currentBusRouteNumber,
+          studentAttendanceCheckboxes: studentAttendanceCheckboxes,
+          date: todaysDate);
+
       // display that record
       // make the rest reachable from dropdown of last 30 days
       //or oldest record of older than 30 days
+      return const Text("still making it");
     } else {
       //yes
       //make the rest reachable from dropdown of last 30 days

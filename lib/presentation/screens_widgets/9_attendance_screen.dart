@@ -13,7 +13,7 @@ import 'package:final_rta_attendance/models/4_attendance_record_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class NewWidget extends StatelessWidget {
+class AttendanceScreen extends StatelessWidget {
   final todaysDate = DateTime.now();
 
   Future<String> fetchAttendanceRecordIdWithSchoolNameBusRouteNumber(
@@ -75,6 +75,8 @@ class NewWidget extends StatelessWidget {
         context.read<AppCubit>().state.currentBusRoute.busRouteNumber;
     final studentIds =
         context.read<AppCubit>().state.currentBusRoute.studentsIDs;
+
+    print("${busRouteNumber}   ${studentIds}");
 
     if (studentIds.isEmpty || studentIds == []) {
       return NoStudentsWidget();
