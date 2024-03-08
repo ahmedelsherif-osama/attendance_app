@@ -38,9 +38,9 @@ class NewWidget extends StatelessWidget {
     return docId;
   }
 
-  Future<List<AttendanceRecordModel>> fetchAttendanceRecords(
+  Future<Map> fetchAttendanceRecordsWithDocIds(
       String schoolName, int busRouteNumber) async {
-    List<AttendanceRecordModel> attendanceRecords = [];
+    Map attendanceRecords = new Map();
 
     try {
       var querySnapshot = await FirebaseFirestore.instance
@@ -49,19 +49,20 @@ class NewWidget extends StatelessWidget {
           .where("busRouteNumber", isEqualTo: busRouteNumber.toString())
           .get();
 
-      attendanceRecords = querySnapshot.docs
-          .map((doc) => AttendanceRecordModel(
-                busRouteNumber: doc.data()['busRouteNumber'],
-                schoolName: doc.data()['schoolName'],
-                date: doc.data()['date'].toDate(),
-                studentAttendanceCheckboxes:
-                    doc.data()['studentAttendanceCheckboxes'],
-              ))
-          .toList();
+      attendanceRecords = querySnapshot.docs.map(
+        (doc) => {
+          doc.id: AttendanceRecordModel(
+            busRouteNumber: doc.data()['busRouteNumber'],
+            schoolName: doc.data()['schoolName'],
+            date: doc.data()['date'].toDate(),
+            studentAttendanceCheckboxes:
+                doc.data()['studentAttendanceCheckboxes'],
+          )
+        },
+      ) as Map;
     } catch (e) {
       print("Error fetching attendanceRecords: $e");
     }
-    print(attendanceRecords.first.date);
     return attendanceRecords;
   }
 
@@ -79,11 +80,11 @@ class NewWidget extends StatelessWidget {
       return NoStudentsWidget();
     } else {
       return FutureBuilder(
-        future: fetchAttendanceRecords(schoolName, busRouteNumber),
+        future: fetchAttendanceRecordsWithDocIds(schoolName, busRouteNumber),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return AttendanceRecordsWidget(
-                attendanceRecords: snapshot.data as List<AttendanceRecordModel>,
+                attendanceRecords: snapshot.data as Map,
                 todaysDate: todaysDate);
           } else {
             // return Text("we dont have attendance records");

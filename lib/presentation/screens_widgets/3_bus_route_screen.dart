@@ -182,6 +182,8 @@ class BusRouteScreen extends StatelessWidget {
                               text: "Take Attendance",
                               color: Colors.green,
                               onTap: () {
+                                print(
+                                    "test ${context.read<AppCubit>().state.currentBusRoute.busRouteNumber}   ${context.read<AppCubit>().state.currentBusRoute.studentsIDs}");
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => NewWidget(),

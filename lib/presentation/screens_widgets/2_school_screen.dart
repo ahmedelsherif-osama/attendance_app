@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:final_rta_attendance/cubit/app_cubit.dart';
 import 'package:final_rta_attendance/models/1_school_model.dart';
 import 'package:final_rta_attendance/models/2_bus_route_model.dart';
+import 'package:final_rta_attendance/models/3_student_model.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/1_school_list.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/3_bus_route_screen.dart';
 import 'package:final_rta_attendance/presentation/screens_widgets/7_add_bus_route_screen.dart';
@@ -37,6 +38,7 @@ class SchoolScreen extends StatelessWidget {
             var addressController = TextEditingController();
             addressController.text =
                 context.read<AppCubit>().state.currentSchool.address.toString();
+
             if (snapshot.hasData) {
               try {
                 return Container(
@@ -76,6 +78,8 @@ class SchoolScreen extends StatelessWidget {
                                     "this is the school nameee " + schoolName);
                                 print("this is the busroutenumberrrr " +
                                     busRoutes[index]);
+                                print("school Name ${schoolName}");
+                                print("busroute number ${busRoutes[index]}");
 
                                 var busRoute = snapshot.data!.docs.firstWhere(
                                     (element) =>
@@ -85,6 +89,7 @@ class SchoolScreen extends StatelessWidget {
                                 print("wtf is this? " + busRoute['schoolName']);
                                 var areas = busRoute['areas'];
                                 var studentsIDs = busRoute['studentsIDs'];
+                                print("students ids for f sake ${studentsIDs}");
                                 var docID = snapshot.data!.docs
                                     .firstWhere((element) =>
                                         element['schoolName'] == schoolName &&
