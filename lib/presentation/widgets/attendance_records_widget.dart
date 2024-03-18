@@ -8,11 +8,24 @@ import 'package:final_rta_attendance/presentation/widgets/student_list_widget%20
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AttendanceRecordsWidget extends StatelessWidget {
+class AttendanceRecordsWidget extends StatefulWidget {
   AttendanceRecordsWidget(
       {required this.attendanceRecords, required this.todaysDate, super.key});
   final Map attendanceRecords;
   final DateTime todaysDate;
+
+  @override
+  State<AttendanceRecordsWidget> createState() =>
+      _AttendanceRecordsWidgetState();
+}
+
+class _AttendanceRecordsWidgetState extends State<AttendanceRecordsWidget> {
+  late DateTime date;
+  @override
+  void initState() {
+    super.initState();
+    date = widget.todaysDate;
+  }
 
   Future<List<StudentModel>> fetchStudentsWithIds(
       String schoolName, int busRouteNumber, studentIds) async {
@@ -52,10 +65,10 @@ class AttendanceRecordsWidget extends StatelessWidget {
     // no need passed down from previous widget
 
     //check if they have one for today
-    final todaysAttendanceRecord = attendanceRecords.keys.firstWhere(
+    final todaysAttendanceRecord = widget.attendanceRecords.keys.firstWhere(
       (element) =>
           element.date.toString().substring(0, 10) ==
-          todaysDate.toString().substring(0, 10),
+          widget.todaysDate.toString().substring(0, 10),
       orElse: () => AttendanceRecordModel.empty(),
     );
 
@@ -73,20 +86,20 @@ class AttendanceRecordsWidget extends StatelessWidget {
       currentBusStudentIds.forEach((element) {
         studentAttendanceCheckboxes[element] = false;
       });
-      print(studentAttendanceCheckboxes.entries);
+      print("inside the latest widget ${studentAttendanceCheckboxes.entries}");
 
       // create a new record for today itself
       var newAttendanceRecordToday = AttendanceRecordModel(
           schoolName: schoolName,
           busRouteNumber: currentBusRouteNumber,
           studentAttendanceCheckboxes: studentAttendanceCheckboxes,
-          date: todaysDate);
+          date: widget.todaysDate);
 
       // 1. check if oldest record is older than or equal 30 days old
-      var minDate = todaysDate.subtract(const Duration(days: 30));
-      for (int index = 0; index < attendanceRecords.length; index++) {
-        if (attendanceRecords[index].date.isBefore(minDate)) {
-          minDate = attendanceRecords[index].date;
+      var minDate = widget.todaysDate.subtract(const Duration(days: 30));
+      for (int index = 0; index < widget.attendanceRecords.length; index++) {
+        if (widget.attendanceRecords[index].date.isBefore(minDate)) {
+          minDate = widget.attendanceRecords[index].date;
         }
       }
 
@@ -112,8 +125,13 @@ class AttendanceRecordsWidget extends StatelessWidget {
                 height: height * 0.1,
               ),
               DropdownMenu(
+                initialSelection: date,
                 dropdownMenuEntries: datesDropDownMenuEntries,
-                onSelected: (value) {},
+                onSelected: (value) {
+                  setState(() {
+                    date = value!;
+                  });
+                },
               ),
               SizedBox(
                 height: height * 0.1,
@@ -143,10 +161,10 @@ class AttendanceRecordsWidget extends StatelessWidget {
       //or oldest record of older than 30 days
 
       // 1. check if oldest record is older than or equal 30 days old
-      var minDate = todaysDate.subtract(const Duration(days: 30));
-      for (int index = 0; index < attendanceRecords.length; index++) {
-        if (attendanceRecords[index].date.isBefore(minDate)) {
-          minDate = attendanceRecords[index].date;
+      var minDate = widget.todaysDate.subtract(const Duration(days: 30));
+      for (int index = 0; index < widget.attendanceRecords.length; index++) {
+        if (widget.attendanceRecords[index].date.isBefore(minDate)) {
+          minDate = widget.attendanceRecords[index].date;
         }
       }
 
@@ -178,12 +196,14 @@ class AttendanceRecordsWidget extends StatelessWidget {
                       DropdownMenu(
                         dropdownMenuEntries: datesDropDownMenuEntries,
                         onSelected: (value) {
-                          final currentAttendanceRecord =
-                              attendanceRecords.values.firstWhere((element) =>
+                          final currentAttendanceRecord = widget
+                              .attendanceRecords.values
+                              .firstWhere((element) =>
                                   element.date.toString().substring(0, 10) ==
                                   value.toString().substring(0, 10));
-                          final currentAttendanceRecordDocId =
-                              attendanceRecords.keys.firstWhere((element) =>
+                          final currentAttendanceRecordDocId = widget
+                              .attendanceRecords.keys
+                              .firstWhere((element) =>
                                   element.date.toString().substring(0, 10) ==
                                   value.toString().substring(0, 10));
                           // update currentattendance record on state

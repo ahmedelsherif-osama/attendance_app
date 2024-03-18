@@ -50,6 +50,7 @@ class AttendanceScreen extends StatelessWidget {
                           element.data() as Map<String, dynamic>);
                 },
               );
+
               return AttendanceRecordsWidget(
                 attendanceRecords: attendanceRecordsBufferMap,
                 todaysDate: todaysDate,
