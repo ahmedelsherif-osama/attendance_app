@@ -16,16 +16,13 @@ void main() async {
       () async {
     // Initialize Firebase with the Firebase app configuration.
     // Ensure Firebase has been initialized before running the test.
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+
     // Call the function under test
     final result = await SourceWidget.AttendanceScreen()
-        .fetchAttendanceRecordsWithDocIds("bs school", "1");
-    print(result);
+        .fetchAttendanceRecordsWithDocIds("bs school", 1);
 
     // Verify the result
-    if (result == null) {
+    if (result.isEmpty) {
       // If the result is null, the function should return null
       expect(result, isNull);
     } else {

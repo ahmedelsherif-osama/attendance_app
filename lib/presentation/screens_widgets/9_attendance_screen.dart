@@ -10,42 +10,6 @@ import 'package:final_rta_attendance/presentation/widgets/no_students_widget.dar
 class AttendanceScreen extends StatelessWidget {
   final todaysDate = DateTime.now();
 
-  Future<Map<String, dynamic>> fetchAttendanceRecordsWithDocIds(
-      schoolName, busRouteNumber) async {
-    try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection("attendanceRecords")
-          .where("schoolName", isEqualTo: schoolName)
-          .where("busRouteNumber", isEqualTo: busRouteNumber.toString())
-          .get();
-
-      final Map<String, dynamic> attendanceRecords = {};
-
-      print("Number of documents found: ${querySnapshot.docs.length}");
-
-      if (querySnapshot.docs.isEmpty) {
-        print("No attendance records found");
-        return Map();
-      }
-
-      querySnapshot.docs.forEach((element) {
-        var bufferAttendanceRecord = AttendanceRecordModel.empty();
-        var bufferDocId = element.id;
-        bufferAttendanceRecord = AttendanceRecordModel(
-          schoolName: element["schoolName"],
-          busRouteNumber: element["busRouteNumber"],
-          studentAttendanceCheckboxes: element["studentAttendanceCheckboxes"],
-          date: element["date"],
-        );
-        attendanceRecords[bufferDocId] = bufferAttendanceRecord;
-      });
-      return attendanceRecords;
-    } catch (e) {
-      print("Error fetching attendanceRecords: $e");
-      return Map();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final schoolName = context.read<AppCubit>().state.currentSchool.name;
@@ -59,8 +23,12 @@ class AttendanceScreen extends StatelessWidget {
     if (studentIds.isEmpty || studentIds == []) {
       return NoStudentsWidget();
     } else {
-      return FutureBuilder<Map<String, dynamic>>(
-        future: fetchAttendanceRecordsWithDocIds(schoolName, busRouteNumber),
+      return StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection("attendanceRecords")
+            .where("schoolName", isEqualTo: schoolName)
+            .where("busRouteNumber", isEqualTo: busRouteNumber)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator(); // Show loading indicator
@@ -69,13 +37,21 @@ class AttendanceScreen extends StatelessWidget {
           } else {
             final attendanceRecords = snapshot.data;
 
-            if (attendanceRecords?.isEmpty ?? true) {
+            if (attendanceRecords == null) {
               print("No attendance records found");
               return NoAttendanceRecordsWidget(todaysDate: todaysDate);
             } else {
               print("Attendance records found");
+              var attendanceRecordsBufferMap = new Map<dynamic, dynamic>();
+              attendanceRecords.docs.forEach(
+                (element) {
+                  attendanceRecordsBufferMap[element.id] =
+                      AttendanceRecordModel.fromJson(
+                          element.data() as Map<String, dynamic>);
+                },
+              );
               return AttendanceRecordsWidget(
-                attendanceRecords: attendanceRecords!,
+                attendanceRecords: attendanceRecordsBufferMap,
                 todaysDate: todaysDate,
               );
             }
