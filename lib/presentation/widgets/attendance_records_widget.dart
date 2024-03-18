@@ -93,7 +93,9 @@ class _AttendanceRecordsWidgetState extends State<AttendanceRecordsWidget> {
           schoolName: schoolName,
           busRouteNumber: currentBusRouteNumber,
           studentAttendanceCheckboxes: studentAttendanceCheckboxes,
-          date: widget.todaysDate);
+          date: date);
+
+      newAttendanceRecordToday.addAttendanceRecordToFirestore();
 
       // 1. check if oldest record is older than or equal 30 days old
       var minDate = widget.todaysDate.subtract(const Duration(days: 30));
@@ -117,39 +119,72 @@ class _AttendanceRecordsWidgetState extends State<AttendanceRecordsWidget> {
                   .toString()
                   .substring(0, 10)));
 
-      return Scaffold(
-        body: Center(
-          child: Column(
-            children: [
-              SizedBox(
-                height: height * 0.1,
+      return FutureBuilder<QuerySnapshot>(
+          future: FirebaseFirestore.instance
+              .collection("attendanceRecords")
+              .where("schoolName", isEqualTo: schoolName)
+              .where("busRouteNumber", isEqualTo: busRouteNumber.toString())
+              .where("date", isEqualTo: date)
+              .snapshots()
+              .first,
+          builder: (context, snapshot) {
+            final currentAttendanceRecordDocId = snapshot.data.toString();
+            final oldState = context.read<AppCubit>().state;
+            context.read<AppCubit>().updateState(oldState.copyWith(
+                  currentAttendanceRecordFirebaseDocId:
+                      currentAttendanceRecordDocId,
+                ));
+            return Scaffold(
+              body: Center(
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: height * 0.1,
+                    ),
+                    DropdownMenu(
+                      initialSelection: date,
+                      dropdownMenuEntries: datesDropDownMenuEntries,
+                      onSelected: (value) {
+                        setState(() {
+                          date = value!;
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      height: height * 0.1,
+                    ),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection("students")
+                          .where("schoolName", isEqualTo: schoolName)
+                          .where("busRouteNumber",
+                              isEqualTo: busRouteNumber.toString())
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        final students = snapshot.data!.docs
+                            .map((e) => StudentModel.fromJson(
+                                e.data() as Map<String, dynamic>))
+                            .toList();
+
+                        return StudentListWithCheckBoxesWidget(
+                            students: students,
+                            attendanceCheckBoxes: newAttendanceRecordToday
+                                .studentAttendanceCheckboxes);
+                      },
+                    ),
+                    SizedBox(
+                      height: height * 0.1,
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: const Text("Save"))
+                  ],
+                ),
               ),
-              DropdownMenu(
-                initialSelection: date,
-                dropdownMenuEntries: datesDropDownMenuEntries,
-                onSelected: (value) {
-                  setState(() {
-                    date = value!;
-                  });
-                },
-              ),
-              SizedBox(
-                height: height * 0.1,
-              ),
-              // StudentListWithCheckBoxesWidget(
-              //     students: students, attendanceCheckBoxes: studentsCheckBoxes),
-              SizedBox(
-                height: height * 0.1,
-              ),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("Save"))
-            ],
-          ),
-        ),
-      );
+            );
+          });
 
       // display that record
       return Text("still making it");
