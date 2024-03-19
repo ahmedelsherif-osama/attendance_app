@@ -73,6 +73,7 @@ class _AttendanceRecordsWidgetState extends State<AttendanceRecordsWidget> {
     );
 
     if (todaysAttendanceRecord.busRouteNumber == "") {
+      print("unfortunately, its not seeing todays existing attendance record");
       // no
       var currentBusRouteNumber = context
           .read<AppCubit>()
@@ -191,6 +192,7 @@ class _AttendanceRecordsWidgetState extends State<AttendanceRecordsWidget> {
       // make the rest reachable from dropdown of last 30 days
       //or oldest record of older than 30 days
     } else {
+      print("attendance record exists for today");
       //yes
       //make the rest reachable from dropdown of last 30 days
       //or oldest record of older than 30 days
