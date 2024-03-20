@@ -48,8 +48,13 @@ class AttendanceScreen extends StatelessWidget {
               attendanceRecords.docs.forEach(
                 (element) {
                   attendanceRecordsBufferMap[element.id] =
-                      AttendanceRecordModel.fromJson(
-                          element.data() as Map<String, dynamic>);
+                      AttendanceRecordModel(
+                    schoolName: element["schoolName"],
+                    busRouteNumber: element["busRouteNumber"],
+                    studentAttendanceCheckboxes:
+                        element["studentAttendanceCheckboxes"],
+                    date: element["date"].toDate(),
+                  );
                   print("right before the widget");
                 },
               );
