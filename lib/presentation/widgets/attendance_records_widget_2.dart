@@ -20,7 +20,7 @@ class AttendanceRecordsWidget extends StatefulWidget {
 
 class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
   DateTime? _date;
-  List<StudentModel>? _students;
+  List<StudentModel>? _students = [];
 
   @override
   void initState() {
@@ -30,9 +30,11 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    print("inside build");
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     var datesDropDownMenuEntries = <DropdownMenuEntry<DateTime>>[];
+    print("before if");
     if (widget.attendanceRecords == null) {
       final thirtyDaysAgo =
           widget.todaysDate.subtract(const Duration(days: 30));
@@ -44,14 +46,20 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
         datesDropDownMenuEntries.add(bufferDateMenuEntry);
       }
     } else {
+      print("attendance records not null");
       var minDate = widget.todaysDate.subtract(const Duration(days: 30));
-      for (int index = 0; index < widget.attendanceRecords!.length; index++) {
-        if (widget.attendanceRecords![index]!.date.isBefore(minDate)) {
-          minDate = widget.attendanceRecords![index]!.date;
-        }
-      }
+      print("widget's attendance records ${widget.attendanceRecords}");
+      print("widget's attendance records ${widget.attendanceRecords}");
 
-      final datesDropDownMenuEntries = List.generate(
+      widget.attendanceRecords!.forEach((key, value) {
+        if (value.date.isBefore(minDate)) {
+          minDate = value.date;
+        }
+      });
+
+      print("after for");
+
+      datesDropDownMenuEntries = List.generate(
           31,
           (index) => DropdownMenuEntry(
               value: minDate.add(Duration(days: index)),
@@ -59,7 +67,12 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
                   .add(Duration(days: index))
                   .toString()
                   .substring(0, 10)));
+      print("inside else ${datesDropDownMenuEntries.first.label}");
     }
+    print("outside else ${datesDropDownMenuEntries.first.label}");
+    print("date ${_date}");
+    print("datesDropDownMnuEntries ${datesDropDownMenuEntries.isEmpty}");
+    print(height);
 
     return Scaffold(
       body: Container(
