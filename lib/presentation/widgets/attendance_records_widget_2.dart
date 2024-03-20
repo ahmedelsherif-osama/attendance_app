@@ -7,18 +7,18 @@ import 'package:final_rta_attendance/presentation/widgets/student_list_widget%20
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AttendanceRecordsWidget2 extends StatefulWidget {
-  AttendanceRecordsWidget2(
+class AttendanceRecordsWidget extends StatefulWidget {
+  AttendanceRecordsWidget(
       {required this.todaysDate, this.attendanceRecords, super.key});
   final DateTime todaysDate;
   Map<String, AttendanceRecordModel>? attendanceRecords;
 
   @override
-  State<AttendanceRecordsWidget2> createState() =>
+  State<AttendanceRecordsWidget> createState() =>
       _AttendanceRecordsWidget2State();
 }
 
-class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget2> {
+class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
   DateTime? _date;
   List<StudentModel>? _students;
 
@@ -69,17 +69,41 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget2> {
             DropdownMenu(
               initialSelection: _date,
               dropdownMenuEntries: datesDropDownMenuEntries,
-              onSelected: (value) {
-                setState(() {
+              onSelected: (value) async {
+                setState(() async {
                   _date = value!;
-                   FirebaseFirestore.instance.collection("students").get().then((value) => _students = value.docs; ); 
+                  var attendanceRecord = widget.attendanceRecords!.values
+                      .where((element) => element.date == _date)
+                      .first;
+                  context.read<AppCubit>().updateState(context
+                      .read<AppCubit>()
+                      .state
+                      .copyWith(currentAttendanceRecord: attendanceRecord));
+                  var studentsIDs = context
+                      .read<AppCubit>()
+                      .state
+                      .currentAttendanceRecord
+                      .studentAttendanceCheckboxes
+                      .keys;
+                  FirebaseFirestore.instance
+                      .collection("students")
+                      .where("studentsIDs", whereIn: studentsIDs)
+                      .get()
+                      .then((value) => value.docs.forEach((element) {
+                            _students!
+                                .add(StudentModel.fromJson(element.data()));
+                          }));
                 });
               },
             ),
             SizedBox(height: height * 0.2),
             StudentListWithCheckBoxesWidget(
-                students: _students,
-                attendanceCheckBoxes: _attendanceCheckBoxes),
+                students: _students!,
+                attendanceCheckBoxes: context
+                    .read<AppCubit>()
+                    .state
+                    .currentAttendanceRecord
+                    .studentAttendanceCheckboxes),
             SizedBox(height: height * 0.2),
             TextButton(onPressed: () {}, child: const Text("Save")),
           ],
