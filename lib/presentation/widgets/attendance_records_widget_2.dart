@@ -20,12 +20,51 @@ class AttendanceRecordsWidget extends StatefulWidget {
 
 class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
   DateTime? _date;
-  List<StudentModel>? _students = [];
+  List<String>? _studentIDs = [];
 
   @override
   void initState() {
     super.initState();
     _date = widget.todaysDate;
+    widget.attendanceRecords!.forEach((key, value) {
+      print("init state ${key}");
+      print(value.date);
+      print(widget.todaysDate);
+    });
+    print(widget.attendanceRecords!.entries.first.key);
+    if (widget.attendanceRecords!.entries.contains((element) =>
+        element.value.date.toString().substring(0, 9) ==
+        widget.todaysDate.toString().substring(0, 9))) {
+      _studentIDs = widget.attendanceRecords!.entries
+          .singleWhere((element) => element.value.date == widget.todaysDate)
+          .value
+          .studentAttendanceCheckboxes
+          .keys
+          .toList();
+      print("init state ${_studentIDs}");
+    } else {
+      _studentIDs = context.read<AppCubit>().state.currentBusRoute.studentsIDs;
+      var bufferStudentAttendanceCheckboxes = new Map<String, dynamic>();
+      _studentIDs!.forEach((Element) {
+        bufferStudentAttendanceCheckboxes[Element] = false;
+      });
+      var oldState = context.read<AppCubit>().state;
+      var bufferAttendanceRecord = AttendanceRecordModel(
+        schoolName: context.read<AppCubit>().state.currentSchool.name,
+        busRouteNumber: context
+            .read<AppCubit>()
+            .state
+            .currentBusRoute
+            .busRouteNumber
+            .toString(),
+        studentAttendanceCheckboxes: bufferStudentAttendanceCheckboxes,
+        date: _date!,
+      );
+      context.read<AppCubit>().updateState(
+          oldState.copyWith(currentAttendanceRecord: bufferAttendanceRecord));
+
+      print("init state ${_studentIDs}");
+    }
   }
 
   @override
@@ -82,11 +121,26 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
             DropdownMenu(
               initialSelection: _date,
               dropdownMenuEntries: datesDropDownMenuEntries,
-              onSelected: (value) async {
-                setState(() async {
+              onSelected: (value) {
+                setState(() {
+                  print("inside set state");
                   _date = value!;
+                  print("date assignment is fine");
+                  print(_date);
+                  var bufferStudentIDList = widget.attendanceRecords!.entries
+                      .firstWhere((element) =>
+                          element.value.date.toString().substring(0, 9) ==
+                          _date.toString().substring(0, 9))
+                      .value
+                      .studentAttendanceCheckboxes
+                      .keys
+                      .toList();
+                  _studentIDs = bufferStudentIDList;
+                  print("buffer student id list ${bufferStudentIDList}");
                   var attendanceRecord = widget.attendanceRecords!.values
-                      .where((element) => element.date == _date)
+                      .where((element) =>
+                          element.date.toString().substring(0, 9) ==
+                          _date.toString().substring(0, 9))
                       .first;
                   context.read<AppCubit>().updateState(context
                       .read<AppCubit>()
@@ -98,25 +152,65 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
                       .currentAttendanceRecord
                       .studentAttendanceCheckboxes
                       .keys;
-                  FirebaseFirestore.instance
-                      .collection("students")
-                      .where("studentsIDs", whereIn: studentsIDs)
-                      .get()
-                      .then((value) => value.docs.forEach((element) {
-                            _students!
-                                .add(StudentModel.fromJson(element.data()));
-                          }));
+                  // FirebaseFirestore.instance
+                  //     .collection("students")
+                  //     .where("studentsIDs", whereIn: studentsIDs)
+                  //     .get()
+                  //     .then((value) => value.docs.forEach((element) {
+                  //           _students!
+                  //               .add(StudentModel.fromJson(element.data()));
+                  //         }));
                 });
               },
             ),
             SizedBox(height: height * 0.2),
-            StudentListWithCheckBoxesWidget(
-                students: _students!,
-                attendanceCheckBoxes: context
-                    .read<AppCubit>()
-                    .state
-                    .currentAttendanceRecord
-                    .studentAttendanceCheckboxes),
+            StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection("students")
+                    .where("studentID", whereIn: _studentIDs)
+                    .where("schoolName",
+                        isEqualTo:
+                            context.read<AppCubit>().state.currentSchool.name)
+                    .where("busRouteNumber",
+                        isEqualTo: context
+                            .read<AppCubit>()
+                            .state
+                            .currentBusRoute
+                            .busRouteNumber
+                            .toString())
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  print(_studentIDs);
+                  print("inside builder...");
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator(); // Show loading indicator
+                  } else if (snapshot.hasError) {
+                    return Text(
+                        "Error: ${snapshot.error}"); // Show error message
+                  } else {
+                    var students = <StudentModel>[];
+                    snapshot.data!.docs.forEach((element) {
+                      students.add(StudentModel.fromJson(
+                          element.data() as Map<String, dynamic>));
+                    });
+                    print(students.first.schoolName);
+                    print(context
+                        .read<AppCubit>()
+                        .state
+                        .currentAttendanceRecord
+                        .studentAttendanceCheckboxes);
+                    return Expanded(
+                      child: StudentListWithCheckBoxesWidget(
+                        students: students,
+                        attendanceCheckBoxes: context
+                            .read<AppCubit>()
+                            .state
+                            .currentAttendanceRecord
+                            .studentAttendanceCheckboxes,
+                      ),
+                    );
+                  }
+                }),
             SizedBox(height: height * 0.2),
             TextButton(onPressed: () {}, child: const Text("Save")),
           ],

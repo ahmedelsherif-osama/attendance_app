@@ -56,6 +56,7 @@ class AttendanceScreen extends StatelessWidget {
                     date: element["date"].toDate(),
                   );
                   print("right before the widget");
+                  print(element.id);
                 },
               );
               return AttendanceRecordsWidget(

@@ -28,7 +28,9 @@ class _StudentListWithCheckBoxesWidgetState
     setState(
       () {
         _students = widget.students;
+        print("_students bro ${_students}");
         _attendanceCheckBoxes = widget.attendanceCheckBoxes;
+        print("_attendanceCheckBoxes ${_attendanceCheckBoxes}");
       },
     );
   }
@@ -39,7 +41,7 @@ class _StudentListWithCheckBoxesWidgetState
     final height = MediaQuery.of(context).size.height;
 
     return Container(
-      constraints: BoxConstraints(maxHeight: height * 0.4),
+      constraints: BoxConstraints(maxHeight: height * 0.8),
       child: Expanded(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
