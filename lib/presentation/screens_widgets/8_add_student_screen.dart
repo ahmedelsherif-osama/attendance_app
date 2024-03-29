@@ -297,8 +297,7 @@ class AddStudentScreen extends StatelessWidget {
                     .state
                     .currentStudent
                     .addStudentToFirestore();
-                print(
-                    "student id ${context.read<AppCubit>().state.currentStudent.studentID}");
+
                 context.read<AppCubit>().updateState(
                       context.read<AppCubit>().state.copyWith(
                             currentBusRoute: context

@@ -17,8 +17,6 @@ class AttendanceScreen extends StatelessWidget {
     final studentIds =
         context.read<AppCubit>().state.currentBusRoute.studentsIDs;
 
-    print("${busRouteNumber}   ${studentIds}");
-
     if (studentIds.isEmpty || studentIds == []) {
       return NoStudentsWidget();
     } else {
@@ -37,14 +35,46 @@ class AttendanceScreen extends StatelessWidget {
             final attendanceRecords = snapshot.data;
 
             if (attendanceRecords!.docs.isEmpty) {
-              print("No attendance records found");
-              return Text("no attendance records");
+              var studentAttendanceCheckboxes = new Map<String, dynamic>();
+              studentIds.forEach((element) {
+                studentAttendanceCheckboxes[element] = false;
+              });
+              var newAttendanceRecord = AttendanceRecordModel(
+                  schoolName: schoolName,
+                  busRouteNumber: busRouteNumber.toString(),
+                  studentAttendanceCheckboxes: studentAttendanceCheckboxes,
+                  date: todaysDate);
+              var attendanceRecords = new Map<String, AttendanceRecordModel>();
+
+              return FutureBuilder<String?>(
+                future: newAttendanceRecord.addAttendanceRecordToFirestore(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    }
+                    final value = snapshot.data;
+                    attendanceRecords[value!] = newAttendanceRecord;
+                    var oldState = context.read<AppCubit>().state;
+                    var newState = oldState.copyWith(
+                      currentAttendanceRecord: newAttendanceRecord,
+                      currentAttendanceRecordFirebaseDocId: value,
+                    );
+                    context.read<AppCubit>().updateState(newState);
+
+                    return AttendanceRecordsWidget(
+                      attendanceRecords: attendanceRecords,
+                      todaysDate: todaysDate,
+                    );
+                  } else {
+                    return CircularProgressIndicator(); // Or any loading indicator
+                  }
+                },
+              );
             } else {
-              print("Attendance records found");
               var attendanceRecordsBufferMap =
                   new Map<String, AttendanceRecordModel>();
-              print("empty map");
-              print(attendanceRecords.docs.isEmpty);
+
               attendanceRecords.docs.forEach(
                 (element) {
                   attendanceRecordsBufferMap[element.id] =
@@ -55,8 +85,6 @@ class AttendanceScreen extends StatelessWidget {
                         element["studentAttendanceCheckboxes"],
                     date: element["date"].toDate(),
                   );
-                  print("right before the widget");
-                  print(element.id);
                 },
               );
               return AttendanceRecordsWidget(

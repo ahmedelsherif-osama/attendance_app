@@ -20,19 +20,13 @@ class StudentListWithCheckBoxesWidget extends StatefulWidget {
 
 class _StudentListWithCheckBoxesWidgetState
     extends State<StudentListWithCheckBoxesWidget> {
-  @override
   var _attendanceCheckBoxes;
   var _students;
   void initState() {
     super.initState();
-    setState(
-      () {
-        _students = widget.students;
-        print("_students bro ${_students}");
-        _attendanceCheckBoxes = widget.attendanceCheckBoxes;
-        print("_attendanceCheckBoxes ${_attendanceCheckBoxes}");
-      },
-    );
+
+    _students = widget.students;
+    _attendanceCheckBoxes = widget.attendanceCheckBoxes;
   }
 
   @override
@@ -105,18 +99,9 @@ class _StudentListWithCheckBoxesWidgetState
                               _attendanceCheckBoxes[_students[index]
                                   .studentID
                                   .toString()] = value;
+                              _students = _students;
                             });
-                            final schoolName = context
-                                .read<AppCubit>()
-                                .state
-                                .currentSchool
-                                .name;
-                            final busRouteNumber = context
-                                .read<AppCubit>()
-                                .state
-                                .currentBusRoute
-                                .busRouteNumber
-                                .toString();
+
                             final attendanceRecordDocId = context
                                 .read<AppCubit>()
                                 .state

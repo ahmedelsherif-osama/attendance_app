@@ -52,9 +52,7 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
   Future<void> createNewFirebaseDoc(collectionPath, jsonDoc) async {
     try {
       await FirebaseFirestore.instance.collection(collectionPath).add(jsonDoc);
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
   }
 
   Future<void> updateBusRouteNumberOnStudentsOnFirebase(
@@ -111,16 +109,10 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
     super.initState();
     _fetchSchools().then((schools) {
       setState(() {
-        print(schools.isEmpty);
-        print(schools[0].name);
-        // Update schoolModels instead of schoolNames
         schoolModels = schools;
-        print(schoolModels.isEmpty);
-        print(schoolModels[0].name);
-        // Initialize and clear the dropdown items list
+
         schoolsDropDownEntries = [];
 
-        // Populate dropdown items here
         schoolModels.forEach(
             (schoolModel) => schoolsDropDownEntries.add(DropdownMenuEntry(
                   value: schoolModel.name,
@@ -135,17 +127,13 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
       var schoolsSnapshot =
           await FirebaseFirestore.instance.collection('schools').get();
 
-      // Convert QuerySnapshot to List<SchoolModel>
       List<SchoolModel> schools = schoolsSnapshot.docs.map((doc) {
         Map<String, dynamic> data = doc.data();
         return SchoolModel.fromJson(data);
       }).toList();
-      print(schools.isEmpty);
-      print(schools[0].name);
+
       return schools;
     } catch (e) {
-      // Handle any errors that occurred during the fetch
-      print('Error fetching schools: $e');
       return [];
     }
   }
@@ -347,16 +335,11 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                       currentSchoolDocId,
                                       "routesNames",
                                       newCurrentSchoolRoutesNames);
-                                } else {
-                                  // Handle the case where the text is not a valid integer
-                                  print("Invalid integer entered");
-                                }
+                                } else {}
                               } else {
                                 if (_addingNewSchool) {
-                                  // 0. check if a school with same name already exists
                                   if (schoolNames!
                                       .contains(schoolNameController.text)) {
-                                    print("error, school already exists");
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         backgroundColor: Colors.red,
@@ -428,7 +411,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                       NewCurrentSchoolRoutesNames.add(element);
                                     }
                                   });
-                                  print(NewCurrentSchoolRoutesNames);
                                   final newCurrentSchool =
                                       oldCurrentSchool.copyWith(
                                           routesNames:
@@ -440,8 +422,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                   context
                                       .read<AppCubit>()
                                       .updateState(newState4);
-                                  print(
-                                      "updated school routesnames on state ${context.read<AppCubit>().state.currentSchool.routesNames}");
 
                                   // 3.52 update routesnames on current school on firebase
                                   final currentSchoolFirebaseDocId = context
@@ -488,7 +468,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                   createNewFirebaseDoc(
                                       "schools", newSchoolFromStateJson);
 
-                                  // 6. clear school firebase doc id on state, for now, when we go back to the school screen, or school list screen
                                   final oldState5 =
                                       context.read<AppCubit>().state;
                                   final newState5 = oldState5.copyWith(
@@ -498,15 +477,11 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                       .updateState(newState5);
                                 }
                                 if (!_addingNewSchool) {
-                                  print("if is working");
-                                  // 2. if not, then check if in the new school a route with same number exists, er if tr
                                   final currentBusRoute = context
                                       .read<AppCubit>()
                                       .state
                                       .currentBusRoute;
-                                  schoolModels
-                                      .forEach((model) => print(model.name));
-                                  print(schoolNameController.text);
+
                                   final newSchool = schoolModels.firstWhere(
                                       (element) =>
                                           element.name ==
@@ -516,11 +491,8 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                       newSchool.routesNames.contains(
                                           currentBusRoute.busRouteNumber
                                               .toString());
-                                  print(
-                                      " new school contains same busroute number ${newSchoolContainsSameBusRouteNumberAlready}");
+
                                   if (newSchoolContainsSameBusRouteNumberAlready) {
-                                    print(
-                                        "error busroutenumber already exists within new school");
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                           behavior: SnackBarBehavior.floating,
@@ -534,8 +506,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                   // // 3. if not, then update school name on cstudents from both schoolnbus on firebase
                                   if (studentList.isNotEmpty &&
                                       studentList != null) {
-                                    print(studentList[0]['name']);
-                                    print(docIds[0]);
                                     docIds.forEach((element) {
                                       updateFirebaseDoc(
                                           "students",
@@ -544,7 +514,7 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                           schoolNameController.text);
                                     });
                                   }
-                                  // 4. remove busroute number from current school on state
+
                                   var oldCurrentSchool = context
                                       .read<AppCubit>()
                                       .state
@@ -552,7 +522,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                   var oldRoutesNames =
                                       oldCurrentSchool.routesNames;
                                   var newRoutesNames = <String>[];
-                                  print("here");
                                   oldRoutesNames.forEach((element) {
                                     if (element.toString() !=
                                         busRouteNumberController.text
@@ -568,18 +537,7 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                   context
                                       .read<AppCubit>()
                                       .updateState(newState);
-                                  print(context
-                                      .read<AppCubit>()
-                                      .state
-                                      .currentSchool
-                                      .routesNames);
-                                  print(context
-                                      .read<AppCubit>()
-                                      .state
-                                      .currentSchool
-                                      .name);
 
-                                  // 5. remove busroute number from current school on firebase
                                   final currentSchool = context
                                       .read<AppCubit>()
                                       .state
@@ -612,16 +570,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                         .read<AppCubit>()
                                         .updateState(newState2);
 
-                                    //testing
-                                    var testSchool2Name = context
-                                        .read<AppCubit>()
-                                        .state
-                                        .currentSchool
-                                        .name;
-                                    print(
-                                        "usecase 6: testing $testSchool2Name");
-
-                                    // 7. update current school on state to have the new bus route number added to it
                                     var currentBusRouteNumber = context
                                         .read<AppCubit>()
                                         .state
@@ -650,15 +598,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                         .read<AppCubit>()
                                         .updateState(newState3);
 
-                                    //testing
-                                    var testSchool3 = context
-                                        .read<AppCubit>()
-                                        .state
-                                        .currentSchool;
-                                    print(
-                                        "usecase 7: testing ${testSchool3.name} ${testSchool3.routesNames}");
-
-                                    // 8. update current docid (on state) to be for this new school
                                     var oldCurrentSchoolDocId = context
                                         .read<AppCubit>()
                                         .state
@@ -683,14 +622,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                           .read<AppCubit>()
                                           .updateState(newState4);
 
-                                      //testing
-                                      var testDocID1 = oldCurrentSchoolDocId;
-                                      var testDocId2 = context
-                                          .read<AppCubit>()
-                                          .state
-                                          .currentSchoolFirebaseDocId;
-                                      print(
-                                          "usecase 8  testing $testDocID1  $testDocId2");
                                       var newCurrentSchoolRoutesNames = context
                                           .read<AppCubit>()
                                           .state
@@ -714,8 +645,6 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                           currentSchoolName);
                                     });
 
-                                    // 9. update this new school on Firebase
-
                                     var newCurrentSchoolRoutesNames = context
                                         .read<AppCubit>()
                                         .state
@@ -729,10 +658,7 @@ class _ChangeDetailsPopupState extends State<ChangeDetailsPopup> {
                                         newCurrentSchoolRoutesNames);
 
                                     Navigator.of(context).pop();
-                                  } catch (error) {
-                                    print("Error: $error");
-                                    // Handle errors as needed
-                                  }
+                                  } catch (error) {}
                                 }
                               }
                               Navigator.of(context).pop();

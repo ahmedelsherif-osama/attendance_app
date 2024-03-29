@@ -26,8 +26,7 @@ class BusRouteScreen extends StatelessWidget {
     final width = MediaQuery.of(context).size.width;
     final currentBusRouteStudents =
         context.read<AppCubit>().state.currentBusRoute.studentsIDs;
-    print(
-        "busroute screen, current state busroute student ids ${currentBusRouteStudents}");
+
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(
@@ -129,8 +128,6 @@ class BusRouteScreen extends StatelessWidget {
                                   ],
                                   onSelectChanged: (bool? selected) {
                                     if (selected != null && selected) {
-                                      print(
-                                          "Clicked on student with ID: ${student['studentID']}");
                                       StudentModel studentModel = StudentModel(
                                         name: student['name'],
                                         studentID: student['studentID'],
@@ -185,8 +182,6 @@ class BusRouteScreen extends StatelessWidget {
                               text: "Take Attendance",
                               color: Colors.green,
                               onTap: () {
-                                print(
-                                    "test ${context.read<AppCubit>().state.currentBusRoute.busRouteNumber}   ${context.read<AppCubit>().state.currentBusRoute.studentsIDs}");
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => AttendanceScreen(),
@@ -250,7 +245,6 @@ class BusRouteScreen extends StatelessWidget {
                                 studentList.forEach((element) {
                                   if (element['busRouteNumber'].toString() ==
                                       busRoute.busRouteNumber.toString()) {
-                                    print(element.id);
                                     FirebaseFirestore.instance
                                         .collection("students")
                                         .doc(element.id)

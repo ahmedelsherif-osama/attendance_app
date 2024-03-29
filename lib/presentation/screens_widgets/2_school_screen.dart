@@ -74,22 +74,14 @@ class SchoolScreen extends StatelessWidget {
                           itemBuilder: (context, index) {
                             return ListTile(
                               onTap: () {
-                                print(
-                                    "this is the school nameee " + schoolName);
-                                print("this is the busroutenumberrrr " +
-                                    busRoutes[index]);
-                                print("school Name ${schoolName}");
-                                print("busroute number ${busRoutes[index]}");
-
                                 var busRoute = snapshot.data!.docs.firstWhere(
                                     (element) =>
                                         element['schoolName'] == schoolName &&
                                         element['busRouteNumber'] ==
                                             int.parse(busRoutes[index]));
-                                print("wtf is this? " + busRoute['schoolName']);
+
                                 var areas = busRoute['areas'];
                                 var studentsIDs = busRoute['studentsIDs'];
-                                print("students ids for f sake ${studentsIDs}");
                                 var docID = snapshot.data!.docs
                                     .firstWhere((element) =>
                                         element['schoolName'] == schoolName &&
@@ -204,7 +196,6 @@ class SchoolScreen extends StatelessWidget {
                   ),
                 );
               } catch (e) {
-                print(e);
                 return Center(child: const CircularProgressIndicator());
               }
             } else {

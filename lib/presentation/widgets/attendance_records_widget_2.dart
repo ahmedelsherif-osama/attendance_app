@@ -8,8 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AttendanceRecordsWidget extends StatefulWidget {
-  AttendanceRecordsWidget(
-      {required this.todaysDate, this.attendanceRecords, super.key});
+  AttendanceRecordsWidget({
+    required this.todaysDate,
+    this.attendanceRecords,
+    super.key,
+  });
   final DateTime todaysDate;
   Map<String, AttendanceRecordModel>? attendanceRecords;
 
@@ -26,22 +29,47 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
   void initState() {
     super.initState();
     _date = widget.todaysDate;
-    widget.attendanceRecords!.forEach((key, value) {
-      print("init state ${key}");
-      print(value.date);
-      print(widget.todaysDate);
-    });
-    print(widget.attendanceRecords!.entries.first.key);
-    if (widget.attendanceRecords!.entries.contains((element) =>
-        element.value.date.toString().substring(0, 9) ==
-        widget.todaysDate.toString().substring(0, 9))) {
-      _studentIDs = widget.attendanceRecords!.entries
-          .singleWhere((element) => element.value.date == widget.todaysDate)
+    var docID = widget.attendanceRecords!.entries
+        .where((element) =>
+            element.value.date.toString().substring(0, 10) ==
+            widget.todaysDate.toString().substring(0, 10))
+        .first
+        .key;
+    var oldState = context.read<AppCubit>().state;
+    context.read<AppCubit>().updateState(
+        oldState.copyWith(currentAttendanceRecordFirebaseDocId: docID));
+
+    if (widget.attendanceRecords!.entries.any((element) =>
+        element.value.date.toString().substring(0, 10) ==
+        widget.todaysDate.toString().substring(0, 10))) {
+      var bufferStudentIDList = widget.attendanceRecords!.entries
+          .firstWhere((element) =>
+              element.value.date.toString().substring(0, 10) ==
+              _date.toString().substring(0, 10))
           .value
           .studentAttendanceCheckboxes
           .keys
           .toList();
-      print("init state ${_studentIDs}");
+      _studentIDs = bufferStudentIDList;
+      var attendanceRecord = widget.attendanceRecords!.values
+          .where((element) =>
+              element.date.toString().substring(0, 10) ==
+              _date.toString().substring(0, 10))
+          .first;
+      var attendanceRecordFirebaseDocId = widget.attendanceRecords!.entries
+          .firstWhere(
+            (entry) =>
+                entry.value.date.toString().substring(0, 10) ==
+                _date.toString().substring(0, 10),
+          )
+          .key;
+      context.read<AppCubit>().updateState(context
+          .read<AppCubit>()
+          .state
+          .copyWith(
+              currentAttendanceRecord: attendanceRecord,
+              currentAttendanceRecordFirebaseDocId:
+                  attendanceRecordFirebaseDocId));
     } else {
       _studentIDs = context.read<AppCubit>().state.currentBusRoute.studentsIDs;
       var bufferStudentAttendanceCheckboxes = new Map<String, dynamic>();
@@ -62,18 +90,14 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
       );
       context.read<AppCubit>().updateState(
           oldState.copyWith(currentAttendanceRecord: bufferAttendanceRecord));
-
-      print("init state ${_studentIDs}");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print("inside build");
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     var datesDropDownMenuEntries = <DropdownMenuEntry<DateTime>>[];
-    print("before if");
     if (widget.attendanceRecords == null) {
       final thirtyDaysAgo =
           widget.todaysDate.subtract(const Duration(days: 30));
@@ -85,18 +109,13 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
         datesDropDownMenuEntries.add(bufferDateMenuEntry);
       }
     } else {
-      print("attendance records not null");
       var minDate = widget.todaysDate.subtract(const Duration(days: 30));
-      print("widget's attendance records ${widget.attendanceRecords}");
-      print("widget's attendance records ${widget.attendanceRecords}");
 
       widget.attendanceRecords!.forEach((key, value) {
         if (value.date.isBefore(minDate)) {
           minDate = value.date;
         }
       });
-
-      print("after for");
 
       datesDropDownMenuEntries = List.generate(
           31,
@@ -106,12 +125,7 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
                   .add(Duration(days: index))
                   .toString()
                   .substring(0, 10)));
-      print("inside else ${datesDropDownMenuEntries.first.label}");
     }
-    print("outside else ${datesDropDownMenuEntries.first.label}");
-    print("date ${_date}");
-    print("datesDropDownMnuEntries ${datesDropDownMenuEntries.isEmpty}");
-    print(height);
 
     return Scaffold(
       body: Container(
@@ -123,43 +137,126 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
               dropdownMenuEntries: datesDropDownMenuEntries,
               onSelected: (value) {
                 setState(() {
-                  print("inside set state");
                   _date = value!;
-                  print("date assignment is fine");
-                  print(_date);
-                  var bufferStudentIDList = widget.attendanceRecords!.entries
-                      .firstWhere((element) =>
-                          element.value.date.toString().substring(0, 9) ==
-                          _date.toString().substring(0, 9))
-                      .value
-                      .studentAttendanceCheckboxes
-                      .keys
-                      .toList();
-                  _studentIDs = bufferStudentIDList;
-                  print("buffer student id list ${bufferStudentIDList}");
-                  var attendanceRecord = widget.attendanceRecords!.values
-                      .where((element) =>
-                          element.date.toString().substring(0, 9) ==
-                          _date.toString().substring(0, 9))
-                      .first;
-                  context.read<AppCubit>().updateState(context
-                      .read<AppCubit>()
-                      .state
-                      .copyWith(currentAttendanceRecord: attendanceRecord));
-                  var studentsIDs = context
-                      .read<AppCubit>()
-                      .state
-                      .currentAttendanceRecord
-                      .studentAttendanceCheckboxes
-                      .keys;
-                  // FirebaseFirestore.instance
-                  //     .collection("students")
-                  //     .where("studentsIDs", whereIn: studentsIDs)
-                  //     .get()
-                  //     .then((value) => value.docs.forEach((element) {
-                  //           _students!
-                  //               .add(StudentModel.fromJson(element.data()));
-                  //         }));
+
+                  if (widget.attendanceRecords!.entries.any((element) =>
+                      element.value.date.toString().substring(0, 10) ==
+                      _date.toString().substring(0, 10))) {
+                    var bufferStudentIDList = widget.attendanceRecords!.entries
+                        .firstWhere((element) =>
+                            element.value.date.toString().substring(0, 10) ==
+                            value.toString().substring(0, 10))
+                        .value
+                        .studentAttendanceCheckboxes
+                        .keys
+                        .toList();
+                    _studentIDs = bufferStudentIDList;
+                    var attendanceRecord = widget.attendanceRecords!.values
+                        .where((element) =>
+                            element.date.toString().substring(0, 10) ==
+                            value.toString().substring(0, 10))
+                        .first;
+                    var attendanceRecordFirebaseDocId = widget
+                        .attendanceRecords!.entries
+                        .firstWhere(
+                          (entry) =>
+                              entry.value.date.toString().substring(0, 10) ==
+                              value.toString().substring(0, 10),
+                        )
+                        .key;
+
+                    context.read<AppCubit>().updateState(context
+                        .read<AppCubit>()
+                        .state
+                        .copyWith(
+                            currentAttendanceRecord: attendanceRecord,
+                            currentAttendanceRecordFirebaseDocId:
+                                attendanceRecordFirebaseDocId));
+                  } else {
+                    _date = value;
+
+                    widget.attendanceRecords!.entries.forEach((element) {});
+
+                    _studentIDs = context
+                        .read<AppCubit>()
+                        .state
+                        .currentBusRoute
+                        .studentsIDs;
+                    var studentAttendanceCheckboxes =
+                        new Map<String, dynamic>();
+                    _studentIDs!.forEach((element) {
+                      studentAttendanceCheckboxes[element] = false;
+                    });
+                    var newAttendanceRecord = AttendanceRecordModel(
+                        schoolName:
+                            context.read<AppCubit>().state.currentSchool.name,
+                        busRouteNumber: context
+                            .read<AppCubit>()
+                            .state
+                            .currentBusRoute
+                            .busRouteNumber
+                            .toString(),
+                        studentAttendanceCheckboxes:
+                            studentAttendanceCheckboxes,
+                        date: value);
+
+                    var oldState = context.read<AppCubit>().state;
+                    var newState = oldState.copyWith(
+                        currentAttendanceRecord: newAttendanceRecord);
+                    context.read<AppCubit>().updateState(newState);
+                    newAttendanceRecord
+                        .addAttendanceRecordToFirestore()
+                        .then((value) {
+                      var newState = oldState.copyWith(
+                          currentAttendanceRecordFirebaseDocId: value);
+                      context.read<AppCubit>().updateState(newState);
+
+                      return StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection("students")
+                              .where("studentID", whereIn: _studentIDs)
+                              .where("schoolName",
+                                  isEqualTo: context
+                                      .read<AppCubit>()
+                                      .state
+                                      .currentSchool
+                                      .name)
+                              .where("busRouteNumber",
+                                  isEqualTo: context
+                                      .read<AppCubit>()
+                                      .state
+                                      .currentBusRoute
+                                      .busRouteNumber
+                                      .toString())
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return CircularProgressIndicator(); // Show loading indicator
+                            } else if (snapshot.hasError) {
+                              return Text(
+                                  "Error: ${snapshot.error}"); // Show error message
+                            } else {
+                              var students = <StudentModel>[];
+                              snapshot.data!.docs.forEach((element) {
+                                students.add(StudentModel.fromJson(
+                                    element.data() as Map<String, dynamic>));
+                              });
+
+                              return Expanded(
+                                child: StudentListWithCheckBoxesWidget(
+                                  students: students,
+                                  attendanceCheckBoxes: context
+                                      .read<AppCubit>()
+                                      .state
+                                      .currentAttendanceRecord
+                                      .studentAttendanceCheckboxes,
+                                ),
+                              );
+                            }
+                          });
+                    });
+                  }
                 });
               },
             ),
@@ -180,8 +277,6 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
                             .toString())
                     .snapshots(),
                 builder: (context, snapshot) {
-                  print(_studentIDs);
-                  print("inside builder...");
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return CircularProgressIndicator(); // Show loading indicator
                   } else if (snapshot.hasError) {
@@ -193,12 +288,7 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
                       students.add(StudentModel.fromJson(
                           element.data() as Map<String, dynamic>));
                     });
-                    print(students.first.schoolName);
-                    print(context
-                        .read<AppCubit>()
-                        .state
-                        .currentAttendanceRecord
-                        .studentAttendanceCheckboxes);
+
                     return Expanded(
                       child: StudentListWithCheckBoxesWidget(
                         students: students,

@@ -44,10 +44,6 @@ class AddSchoolScreen extends StatelessWidget {
             SizedBox(height: MediaQuery.of(context).size.height * 0.1),
             ElevatedButton(
               onPressed: () async {
-                print(nameController.text +
-                    addressController.text +
-                    areaController.text);
-
                 context.read<AppCubit>().updateState(
                       context.read<AppCubit>().state.copyWith(
                             currentSchool: SchoolModel(

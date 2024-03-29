@@ -57,10 +57,7 @@ class StudentListWidget extends StatelessWidget {
                     ),
                   ],
                   onSelectChanged: (bool? selected) {
-                    if (selected != null && selected) {
-                      print(
-                          "Clicked on student with ID: ${students[index].studentID}");
-                    }
+                    if (selected != null && selected) {}
                   },
                 );
               },

@@ -42,7 +42,6 @@ class AddBusRouteScreen extends StatelessWidget {
             SizedBox(height: MediaQuery.of(context).size.height * 0.1),
             ElevatedButton(
               onPressed: () async {
-                print(routeNumberController.text + schoolNameController.text);
                 context.read<AppCubit>().updateState(
                       context.read<AppCubit>().state.copyWith(
                             currentBusRoute: BusRouteModel(
@@ -54,11 +53,7 @@ class AddBusRouteScreen extends StatelessWidget {
                             ),
                           ),
                     );
-                print(context
-                    .read<AppCubit>()
-                    .state
-                    .currentBusRoute
-                    .busRouteNumber);
+
                 context
                     .read<AppCubit>()
                     .state

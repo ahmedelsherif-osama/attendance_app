@@ -59,7 +59,25 @@ class AttendanceRecordModel extends Equatable {
     );
   }
 
-  void addAttendanceRecordToFirestore() async {
+  // void addAttendanceRecordToFirestore() async {
+  //   // Create a new instance of SchoolModel
+  //   AttendanceRecordModel newAttendanceRecord = AttendanceRecordModel(
+  //     schoolName: schoolName,
+  //     busRouteNumber: busRouteNumber,
+  //     studentAttendanceCheckboxes: studentAttendanceCheckboxes,
+  //     date: date,
+  //   );
+
+  //   // Convert SchoolModel to JSON
+  //   Map<String, dynamic> attendanceRecordJson = newAttendanceRecord.toJson();
+
+  //   // Add the document to Firestore
+  //   await FirebaseFirestore.instance
+  //       .collection('attendanceRecords')
+  //       .add(attendanceRecordJson);
+  // }
+
+  Future<String?> addAttendanceRecordToFirestore() async {
     // Create a new instance of SchoolModel
     AttendanceRecordModel newAttendanceRecord = AttendanceRecordModel(
       schoolName: schoolName,
@@ -72,9 +90,12 @@ class AttendanceRecordModel extends Equatable {
     Map<String, dynamic> attendanceRecordJson = newAttendanceRecord.toJson();
 
     // Add the document to Firestore
-    await FirebaseFirestore.instance
+    DocumentReference docRef = await FirebaseFirestore.instance
         .collection('attendanceRecords')
         .add(attendanceRecordJson);
+
+    // Return the document ID
+    return docRef.id;
   }
 
   void updateAttendanceRecordOnFirestore(docId) async {
