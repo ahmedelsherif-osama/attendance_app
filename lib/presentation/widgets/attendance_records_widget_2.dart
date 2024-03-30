@@ -3,7 +3,7 @@ import 'package:attendance_app/cubit/app_cubit.dart';
 import 'package:attendance_app/cubit/app_state.dart';
 import 'package:attendance_app/models/3_student_model.dart';
 import 'package:attendance_app/models/4_attendance_record_model.dart';
-import 'package:attendance_app/presentation/widgets/student_list_widget%20copy.dart';
+import 'package:attendance_app/presentation/widgets/student_list_with_checkboxes_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -230,6 +230,7 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
                                       .toString())
                               .snapshots(),
                           builder: (context, snapshot) {
+                            print("object");
                             if (snapshot.connectionState ==
                                 ConnectionState.waiting) {
                               return CircularProgressIndicator(); // Show loading indicator
@@ -285,10 +286,22 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
                   } else {
                     var students = <StudentModel>[];
                     snapshot.data!.docs.forEach((element) {
-                      students.add(StudentModel.fromJson(
-                          element.data() as Map<String, dynamic>));
+                      var data = element.data()! as Map<String, dynamic>;
+                      students.add(StudentModel(
+                        name: data["name"],
+                        studentID: data["studentID"],
+                        primaryPhoneNumber: data["primaryPhoneNumber"],
+                        fatherPhoneNumber: data["fatherPhoneNumber"],
+                        grade: data["grade"],
+                        group: data["group"],
+                        longtitude: data["longtitude"] as double,
+                        latitude: data["latitude"] as double,
+                        addressDescription: data["addressDescription"],
+                        makkani: data["makkani"],
+                        schoolName: data["schoolName"],
+                        busRouteNumber: data["busRouteNumber"],
+                      ));
                     });
-
                     return Expanded(
                       child: StudentListWithCheckBoxesWidget(
                         students: students,
@@ -302,7 +315,11 @@ class _AttendanceRecordsWidget2State extends State<AttendanceRecordsWidget> {
                   }
                 }),
             SizedBox(height: height * 0.2),
-            TextButton(onPressed: () {}, child: const Text("Save")),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Save")),
           ],
         ),
       ),
