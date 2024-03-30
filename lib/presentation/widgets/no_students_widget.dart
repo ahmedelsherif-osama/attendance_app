@@ -1,4 +1,4 @@
-import 'package:final_rta_attendance/presentation/screens_widgets/8_add_student_screen.dart';
+import 'package:attendance_app/presentation/screens_widgets/8_add_student_screen.dart';
 import 'package:flutter/material.dart';
 
 class NoStudentsWidget extends StatelessWidget {

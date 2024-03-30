@@ -79,8 +79,6 @@ class BusRouteModel extends Equatable {
   }
 
   void deleteBusRouteFromFirestore(docId) async {
-    print(docId);
-
     await FirebaseFirestore.instance
         .collection('busRoutes')
         .doc(docId)

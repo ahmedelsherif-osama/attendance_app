@@ -1,5 +1,5 @@
-import 'package:final_rta_attendance/cubit/app_cubit.dart';
-import 'package:final_rta_attendance/models/3_student_model.dart';
+import 'package:attendance_app/cubit/app_cubit.dart';
+import 'package:attendance_app/models/3_student_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

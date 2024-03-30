@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:final_rta_attendance/cubit/app_cubit.dart';
-import 'package:final_rta_attendance/models/1_school_model.dart';
-import 'package:final_rta_attendance/models/3_student_model.dart';
+import 'package:attendance_app/cubit/app_cubit.dart';
+import 'package:attendance_app/models/1_school_model.dart';
+import 'package:attendance_app/models/3_student_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
